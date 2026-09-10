@@ -1,0 +1,52 @@
+{
+  "Ptilopsis:NeuralStrike": {
+    "NAME": "神经冲击",
+    "DESCRIPTION": "造成 !D! 点伤害。"
+  },
+  "Ptilopsis:MemoryGuard": {
+    "NAME": "记忆防线",
+    "DESCRIPTION": "获得 !B! 点格挡。"
+  },
+  "Ptilopsis:BootThread": {
+    "NAME": "启动线程",
+    "DESCRIPTION": "创建 1 个空可变线程。 NL 获得 !B! 点格挡。 NL 抽 !M! 张牌。"
+  },
+  "Ptilopsis:ReadOnlyThread": {
+    "NAME": "只读线程",
+    "DESCRIPTION": "保留。消耗。 NL 挂载固定线程：构造和回合结束时，获得 !B! 点格挡。 NL 析构时，抽 !M! 张牌。"
+  },
+  "Ptilopsis:WakeRoutine": {
+    "NAME": "唤醒例程",
+    "DESCRIPTION": "抽 !M! 张牌。 NL 挂载固定线程：回合开始时，抽 !M! 张牌。 NL 激发或析构时，获得 [E] 并抽 1 张牌。",
+    "UPGRADE_DESCRIPTION": "固有。 NL 抽 !M! 张牌。 NL 挂载固定线程：回合开始时，抽 !M! 张牌。 NL 激发或析构时，获得 [E] 并抽 1 张牌。"
+  },
+  "Ptilopsis:CacheRefresh": {
+    "NAME": "缓存刷新",
+    "DESCRIPTION": "消耗。 NL 抽 !M! 张牌。每有 1 个已挂载线程，额外抽 1 张牌。"
+  },
+  "Ptilopsis:CoroutineYield": {
+    "NAME": "协程让渡",
+    "DESCRIPTION": "消耗。 NL 激发所有线程。"
+  },
+  "Ptilopsis:QuickIteration": {
+    "NAME": "快速迭代",
+    "DESCRIPTION": "消耗。 NL 将 !M! 张随机本职业牌加入手牌。它们变为 0 费并获得消耗。"
+  },
+  "Ptilopsis:Offline": {
+    "NAME": "离线",
+    "DESCRIPTION": "选择至多 !M! 张手牌并消耗。 NL 按选择顺序挂载固定线程：回合结束时，免费打出这些牌的复制体，攻击牌随机目标。 NL 析构时，获得 !B! 点格挡。",
+    "EXTENDED_DESCRIPTION": ["选择要封装的牌（可少选）"]
+  },
+  "Ptilopsis:Magallan": {
+    "NAME": "麦哲伦",
+    "DESCRIPTION": "保留。消耗。 NL 每使用 1 张其他牌，本牌本场战斗费用 -1。 NL 打出后，本回合结束时获得 1 个额外回合。"
+  },
+  "Ptilopsis:Muelsyse": {
+    "NAME": "缪尔赛斯",
+    "DESCRIPTION": "她会在恰当的时候帮你！ NL 恢复 !M! 点生命。 NL 消耗。"
+  },
+  "Ptilopsis:Closure": {
+    "NAME": "可露希尔",
+    "DESCRIPTION": "固有。消耗。 NL 花费至多 !M! 金币。 NL 本场战斗升级所有牌。 NL 战斗胜利后，随机升级牌组中 1 张牌。"
+  }
+}

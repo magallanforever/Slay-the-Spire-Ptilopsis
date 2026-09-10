@@ -1,0 +1,52 @@
+{
+  "Ptilopsis:NeuralStrike": {
+    "NAME": "Neural Strike",
+    "DESCRIPTION": "Deal !D! damage."
+  },
+  "Ptilopsis:MemoryGuard": {
+    "NAME": "Memory Guard",
+    "DESCRIPTION": "Gain !B! Block."
+  },
+  "Ptilopsis:BootThread": {
+    "NAME": "Boot Thread",
+    "DESCRIPTION": "Create 1 empty Mutable Thread. NL Gain !B! Block. NL Draw !M! card."
+  },
+  "Ptilopsis:ReadOnlyThread": {
+    "NAME": "Read-Only Thread",
+    "DESCRIPTION": "Retain. Exhaust. NL Install a Fixed Thread: when constructed and at end of turn, gain !B! Block. NL When destructed, draw !M! card."
+  },
+  "Ptilopsis:WakeRoutine": {
+    "NAME": "Wake Routine",
+    "DESCRIPTION": "Draw !M! cards. NL Install a Fixed Thread: at start of turn, draw !M! cards. NL When triggered or destructed, gain [E] and draw 1 card.",
+    "UPGRADE_DESCRIPTION": "Innate. NL Draw !M! cards. NL Install a Fixed Thread: at start of turn, draw !M! cards. NL When triggered or destructed, gain [E] and draw 1 card."
+  },
+  "Ptilopsis:CacheRefresh": {
+    "NAME": "Cache Refresh",
+    "DESCRIPTION": "Exhaust. NL Draw !M! card. Draw 1 more for each mounted Thread."
+  },
+  "Ptilopsis:CoroutineYield": {
+    "NAME": "Coroutine Yield",
+    "DESCRIPTION": "Exhaust. NL Trigger all Threads."
+  },
+  "Ptilopsis:QuickIteration": {
+    "NAME": "Quick Iteration",
+    "DESCRIPTION": "Exhaust. NL Add !M! random Ptilopsis cards to your hand. They cost 0 and Exhaust."
+  },
+  "Ptilopsis:Offline": {
+    "NAME": "Offline",
+    "DESCRIPTION": "Choose up to !M! cards in your hand and Exhaust them. NL Install a Fixed Thread: at end of turn, play copies in order for free. Attacks target random enemies. NL When destructed, gain !B! Block.",
+    "EXTENDED_DESCRIPTION": ["Choose cards to pack (you may choose fewer)"]
+  },
+  "Ptilopsis:Magallan": {
+    "NAME": "Magallan",
+    "DESCRIPTION": "Retain. Exhaust. NL Whenever you play another card, this costs 1 less this combat. NL After this turn ends, take an extra turn."
+  },
+  "Ptilopsis:Muelsyse": {
+    "NAME": "Muelsyse",
+    "DESCRIPTION": "She will help you at the right moment! NL Heal !M! HP. NL Exhaust."
+  },
+  "Ptilopsis:Closure": {
+    "NAME": "Closure",
+    "DESCRIPTION": "Innate. Exhaust. NL Spend up to !M! Gold. NL Upgrade all cards this combat. NL After winning this combat, upgrade 1 random card in your deck."
+  }
+}

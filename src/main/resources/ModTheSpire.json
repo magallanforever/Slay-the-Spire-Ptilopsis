@@ -1,0 +1,10 @@
+{
+    "modid": "Ptilopsis",
+    "name": "Ptilopsis",
+    "author_list": ["高效制冷模块"],
+    "description": "A mod about Ptilopsis, threads, coroutines, and binary combat scheduling.",
+    "version": "0.0.1",
+    "sts_version": "12-20-2022",
+    "mts_version": "3.23.2",
+    "dependencies": ["basemod"]
+}

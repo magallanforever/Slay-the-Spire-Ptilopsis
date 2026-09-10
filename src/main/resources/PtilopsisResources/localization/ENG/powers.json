@@ -1,0 +1,20 @@
+{
+  "Ptilopsis:ThreadNetworkPower": {
+    "NAME": "Thread Network",
+    "DESCRIPTIONS": [
+      "Thread capacity: #b",
+      " . Active slots: ",
+      "None",
+      "Empty Slot",
+      ", ",
+      ". At the start and end of each turn, run each Thread's matching hook."
+    ]
+  },
+  "Ptilopsis:ClosurePendingUpgradePower": {
+    "NAME": "Engineering Support",
+    "DESCRIPTIONS": [
+      "After winning this combat, upgrade #b",
+      " random card(s) in your deck."
+    ]
+  }
+}

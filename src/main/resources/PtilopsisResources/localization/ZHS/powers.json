@@ -1,0 +1,20 @@
+{
+  "Ptilopsis:ThreadNetworkPower": {
+    "NAME": "线程网络",
+    "DESCRIPTIONS": [
+      "线程容量：#b",
+      " 。当前槽位：",
+      "无",
+      "空槽",
+      "，",
+      "。每回合开始和结束时，依次执行所有线程在对应时机的钩子。"
+    ]
+  },
+  "Ptilopsis:ClosurePendingUpgradePower": {
+    "NAME": "工程部支援",
+    "DESCRIPTIONS": [
+      "战斗胜利后，随机升级你卡组中的 #b",
+      " 张牌。"
+    ]
+  }
+}
