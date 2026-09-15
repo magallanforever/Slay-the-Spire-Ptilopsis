@@ -4,10 +4,12 @@ import Ptilopsis.Ptilopsis;
 import Ptilopsis.powers.ThreadNetworkPower;
 import Ptilopsis.threads.effects.CardThreadFunction;
 import Ptilopsis.ui.ThreadUiText;
+import basemod.helpers.CardPowerTip;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.megacrit.cardcrawl.actions.GameActionManager;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -16,14 +18,23 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
+import com.megacrit.cardcrawl.helpers.MathHelper;
+import com.megacrit.cardcrawl.helpers.PowerTip;
+import com.megacrit.cardcrawl.helpers.TipHelper;
+import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
+import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.select.HandCardSelectScreen;
+import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
+import com.megacrit.cardcrawl.vfx.ThoughtBubble;
 import java.util.ArrayList;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ThreadOrb extends AbstractOrb {
     public static final String ORB_ID = Ptilopsis.makeID("ThreadOrb");
+    public static final int MANUAL_MOUNT_COST = 1;
     private static final Logger logger = LogManager.getLogger(ThreadOrb.class.getName());
     private static final float MENU_W = 176.0F;
     private static final float MENU_H = 42.0F;
@@ -41,6 +52,9 @@ public class ThreadOrb extends AbstractOrb {
 
     private final boolean mutable;
     private ThreadFunction function;
+    private ThreadFunction expiringFunction;
+    private List<AbstractCard> previewCards;
+    private int previewIndex;
 
     public ThreadOrb(boolean mutable) {
         this.ID = ORB_ID;
@@ -80,6 +94,15 @@ public class ThreadOrb extends AbstractOrb {
     }
 
     public void destroy(AbstractPlayer player) {
+        this.expiringFunction = null;
+        this.previewCards = null;
+        this.previewIndex = 0;
+        if (menuOrb == this) {
+            closeMenu();
+        }
+        if (pressedOrb == this) {
+            pressedOrb = null;
+        }
         if (this.function != null) {
             this.function.onDestruct(player);
             this.function = null;
@@ -105,6 +128,9 @@ public class ThreadOrb extends AbstractOrb {
     public void onEndOfTurn() {
         if (this.function != null) {
             this.function.atEndOfTurn(AbstractDungeon.player);
+            if (this.mutable && this.function.expiresAtEndOfTurn()) {
+                this.expiringFunction = this.function;
+            }
         }
     }
 
@@ -116,8 +142,16 @@ public class ThreadOrb extends AbstractOrb {
     @Override
     public void update() {
         processSelection(AbstractDungeon.player);
+        // Card effects are queued; keep the thread until its last replay finishes.
+        if (this.expiringFunction != null && this.expiringFunction == this.function
+                && !this.expiringFunction.isReplayPending(AbstractDungeon.player)) {
+            ThreadNetworkPower.getOrCreate(AbstractDungeon.player).destructThread(this);
+            return;
+        }
         updateInputState();
-        super.update();
+        this.hb.update();
+        this.fontScale = MathHelper.scaleLerpSnap(this.fontScale, 0.7F);
+        updatePreview();
 
         if (menuOrb == this) {
             updateMenu();
@@ -134,14 +168,58 @@ public class ThreadOrb extends AbstractOrb {
         }
     }
 
+    private void updatePreview() {
+        if (!this.hb.hovered || AbstractDungeon.isScreenUp || menuOrb != null) {
+            this.previewCards = null;
+            this.previewIndex = 0;
+            return;
+        }
+        if (this.function == null) {
+            TipHelper.renderGenericTip(this.cX + 96.0F * Settings.scale,
+                    this.cY + 64.0F * Settings.scale, this.name, this.description);
+            return;
+        }
+        if (this.previewCards == null) {
+            this.previewCards = this.function.makePreviewCards();
+        }
+        if (this.previewCards.isEmpty()) {
+            return;
+        }
+        int count = this.previewCards.size();
+        if (InputHelper.scrolledDown) {
+            this.previewIndex = (this.previewIndex + 1) % count;
+        } else if (InputHelper.scrolledUp) {
+            this.previewIndex = (this.previewIndex + count - 1) % count;
+        }
+        AbstractCard card = this.previewCards.get(this.previewIndex);
+        card.applyPowers();
+        card.freeToPlayOnce = true;
+        CardPowerTip tip = new CardPowerTip(card, this.name,
+                ThreadUiText.previewBody(this.function.runsAtStartOfTurn(),
+                        this.mutable && this.function.expiresAtEndOfTurn(), this.previewIndex, count));
+        tip.cardScale = 0.8F;
+        ArrayList<PowerTip> tips = new ArrayList<>();
+        tips.add(tip);
+        float width = 320.0F * Settings.scale;
+        float x = this.cX + 80.0F * Settings.scale;
+        if (x + width > Settings.WIDTH - 30.0F * Settings.scale) {
+            x = this.cX - width - 80.0F * Settings.scale;
+        }
+        x = Math.max(30.0F * Settings.scale, x);
+        float y = Math.min(Settings.HEIGHT - 64.0F * Settings.scale,
+                Math.max(this.cY + 160.0F * Settings.scale, 600.0F * Settings.scale));
+        TipHelper.queuePowerTips(x, y, tips);
+    }
+
     @Override
     public void updateDescription() {
         if (isEmpty()) {
             this.name = ThreadUiText.emptyMutableTitle();
-            this.description = ThreadUiText.emptyMutableBody();
+            this.description = ThreadUiText.emptyMutableBody(MANUAL_MOUNT_COST);
         } else if (this.mutable) {
             this.name = ThreadUiText.mutableTitle();
-            this.description = ThreadUiText.functionBody(this.function.getDisplayName());
+            this.description = ThreadUiText.functionBody(this.function.getDisplayName(),
+                    this.function.expiresAtEndOfTurn());
         } else {
             this.name = ThreadUiText.fixedTitle();
             this.description = ThreadUiText.fixedBody(this.function.getDisplayName());
@@ -169,7 +247,7 @@ public class ThreadOrb extends AbstractOrb {
     }
 
     private void handleClick(AbstractPlayer player) {
-        if (AbstractDungeon.isScreenUp) {
+        if (AbstractDungeon.isScreenUp || !canInteract(player)) {
             return;
         }
 
@@ -180,10 +258,14 @@ public class ThreadOrb extends AbstractOrb {
 
         if (isEmpty()) {
             closeMenu();
+            if (EnergyPanel.totalCount < MANUAL_MOUNT_COST) {
+                showInsufficientEnergy(player);
+                return;
+            }
             if (!AbstractDungeon.isScreenUp && !player.hand.isEmpty()) {
                 logger.info("Opening mutable thread hand select. handSize={}", player.hand.size());
                 selectingOrb = this;
-                AbstractDungeon.handCardSelectScreen.open(ThreadUiText.selectCardPrompt(), 1, false, false, false, false, false);
+                AbstractDungeon.handCardSelectScreen.open(ThreadUiText.selectCardPrompt(MANUAL_MOUNT_COST), 1, false, true, false, false, true);
                 CardCrawlGame.sound.play("UI_CLICK_1");
             }
         } else {
@@ -202,18 +284,46 @@ public class ThreadOrb extends AbstractOrb {
         ArrayList<AbstractCard> selectedCards = new ArrayList<>(screen.selectedCards.group);
         screen.selectedCards.clear();
         screen.wereCardsRetrieved = true;
-        if (!selectedCards.isEmpty()) {
-            logger.info("Mounted mutable thread function. card={}", selectedCards.get(0).name);
-            selectingOrb.mount(new CardThreadFunction(selectedCards.get(0)), player);
-            for (AbstractCard card : selectedCards) {
-                if (!player.hand.contains(card)) {
-                    player.hand.addToTop(card);
-                }
+        ThreadOrb target = selectingOrb;
+        selectingOrb = null;
+        for (AbstractCard card : selectedCards) {
+            if (!player.hand.contains(card)) {
+                player.hand.addToTop(card);
             }
         }
-        selectingOrb = null;
+        if (selectedCards.size() == 1 && canInteract(player)
+                && player.orbs.contains(target) && target.mutable && target.isEmpty()) {
+            if (EnergyPanel.totalCount >= MANUAL_MOUNT_COST) {
+                CardThreadFunction mountedFunction = new CardThreadFunction(selectedCards.get(0));
+                player.energy.use(MANUAL_MOUNT_COST);
+                target.mount(mountedFunction, player);
+                logger.info("Mounted mutable thread function. card={}, energyCost={}",
+                        selectedCards.get(0).name, MANUAL_MOUNT_COST);
+            } else {
+                showInsufficientEnergy(player);
+            }
+        }
         player.hand.refreshHandLayout();
         player.hand.applyPowers();
+    }
+
+    private static boolean canInteract(AbstractPlayer player) {
+        return player != null && !player.isDeadOrEscaped()
+                && !player.endTurnQueued && !player.isEndingTurn && !player.isDraggingCard
+                && AbstractDungeon.currMapNode != null
+                && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT
+                && !AbstractDungeon.getMonsters().areMonstersBasicallyDead()
+                && AbstractDungeon.actionManager != null
+                && !AbstractDungeon.actionManager.turnHasEnded
+                && AbstractDungeon.actionManager.phase == GameActionManager.Phase.WAITING_ON_USER
+                && AbstractDungeon.actionManager.currentAction == null
+                && AbstractDungeon.actionManager.cardQueue.isEmpty()
+                && AbstractDungeon.actionManager.isEmpty();
+    }
+
+    private static void showInsufficientEnergy(AbstractPlayer player) {
+        AbstractDungeon.effectList.add(new ThoughtBubble(player.dialogX, player.dialogY,
+                2.0F, ThreadUiText.insufficientEnergy(MANUAL_MOUNT_COST), true));
     }
 
     private void renderBase(SpriteBatch sb) {
@@ -282,6 +392,10 @@ public class ThreadOrb extends AbstractOrb {
     }
 
     private void updateMenu() {
+        if (AbstractDungeon.isScreenUp || !canInteract(AbstractDungeon.player)) {
+            closeMenu();
+            return;
+        }
         positionMenuHitboxes();
         removeButtonHb.update();
         closeButtonHb.update();

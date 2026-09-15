@@ -9,8 +9,9 @@ public class BootThread extends AbstractPtilopsisCard {
 
     public BootThread() {
         super(ID, 1, CardType.SKILL, CardRarity.BASIC, CardTarget.SELF);
-        this.block = this.baseBlock = 4;
+        this.block = this.baseBlock = 3;
         this.magicNumber = this.baseMagicNumber = 1;
+        this.exhaust = true;
     }
 
     @Override
@@ -24,7 +25,7 @@ public class BootThread extends AbstractPtilopsisCard {
     public void upgrade() {
         if (!this.upgraded) {
             upgradeName();
-            upgradeBlock(3);
+            upgradeBlock(2);
         }
     }
 }

@@ -1,0 +1,42 @@
+[
+  {
+    "NAMES": ["Thread", "threads"],
+    "DESCRIPTION": "Occupies 1 Thread slot. Fixed Threads cannot change functions; Mutable Threads can. A Mutable Thread without a function still counts as a Thread. An unoccupied slot does not."
+  },
+  {
+    "NAMES": ["Construct"],
+    "DESCRIPTION": "Create a Thread and activate its construction effect. If all slots are full, destruct the oldest Thread. Constructing an empty Mutable Thread does not increase your slot limit."
+  },
+  {
+    "NAMES": ["Function"],
+    "DESCRIPTION": "At turn end, play temporary effect cards for free with random targets. All Threads count as playing cards. A Mutable Thread mounted with an Exhaust card or a Power destructs after resolving."
+  },
+  {
+    "NAMES": ["Mount"],
+    "DESCRIPTION": "Store a card's effect in a Mutable Thread. Keep the original. Manual mounting costs 1 Energy; automatic mounting is free. Automatic mounting fills an empty Mutable Thread or replaces the oldest one's function. If none exist, construct one."
+  },
+  {
+    "NAMES": ["Trigger"],
+    "DESCRIPTION": "Activate a Thread's trigger effect once without removing it. Unless specified otherwise, activate its function."
+  },
+  {
+    "NAMES": ["Destruct"],
+    "DESCRIPTION": "Remove a Thread, activate its destruction effect, and free its slot. Mutable Threads without a function can also be destructed."
+  },
+  {
+    "NAMES": ["Master Theorem", "master_theorem"],
+    "DESCRIPTION": "At the start of the affected enemy's turn, it loses HP equal to the stacks. Unless another effect prevents it, halve the stacks at the end of that enemy's turn, rounded up. The final stack does not expire on its own."
+  },
+  {
+    "NAMES": ["Inversion", "inversions"],
+    "DESCRIPTION": "Reading the draw pile from top to bottom, any pair with a higher-cost card before a lower-cost card is one inversion. Equal costs do not count. Uses current turn costs; X-cost and unplayable cards sort last."
+  },
+  {
+    "NAMES": ["Aftershock", "aftershocks"],
+    "DESCRIPTION": "Deal additional damage to ALL enemies. Each hit uses half this card's calculated initial damage, rounded down, before Block and other damage reduction. Subsequent aftershocks do not halve again."
+  },
+  {
+    "NAMES": ["Right Moment", "right_moment"],
+    "DESCRIPTION": "op is the number of cards played this combat. This card costs (op ^ 15) & 15, or (op ^ 7) & 7 when upgraded. ^ is bitwise XOR; & is bitwise AND."
+  }
+]

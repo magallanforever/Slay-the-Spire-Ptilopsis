@@ -1,0 +1,9 @@
+{
+  "Ptilopsis:RhineLabBadge": {
+    "NAME": "莱茵生命工牌",
+    "FLAVOR": "白面鸮的员工凭证。",
+    "DESCRIPTIONS": [
+      "战斗开始时，构造 #b1 个空可变线程。"
+    ]
+  }
+}

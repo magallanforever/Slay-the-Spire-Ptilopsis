@@ -1,16 +1,15 @@
 package Ptilopsis.threads.effects;
 
 import Ptilopsis.threads.ThreadFunction;
+import Ptilopsis.threads.ThreadCardPlayback;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.cards.CardQueueItem;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class CardThreadFunction implements ThreadFunction {
     private final AbstractCard storedCard;
-    private final ArrayList<AbstractCard> queuedCards = new ArrayList<>();
+    private final ThreadCardPlayback playback = new ThreadCardPlayback();
 
     public CardThreadFunction(AbstractCard card) {
         this.storedCard = card.makeStatEquivalentCopy();
@@ -22,38 +21,22 @@ public class CardThreadFunction implements ThreadFunction {
     }
 
     @Override
-    public void atEndOfTurn(AbstractPlayer player) {
-        if (player.isDeadOrEscaped()
-                || isReplayPending(player)
-                || AbstractDungeon.getMonsters().areMonstersBasicallyDead()) {
-            return;
-        }
-
-        AbstractCard card = this.storedCard.makeStatEquivalentCopy();
-        card.freeToPlayOnce = true;
-        card.purgeOnUse = true;
-        card.current_x = player.drawX;
-        card.current_y = player.drawY;
-        card.target_x = player.drawX;
-        card.target_y = player.drawY;
-        this.queuedCards.add(card);
-
-        CardQueueItem item = new CardQueueItem(card, true, EnergyPanel.totalCount, true, true);
-        item.isEndTurnAutoPlay = player.endTurnQueued;
-        AbstractDungeon.actionManager.addCardQueueItem(item);
+    public List<AbstractCard> makePreviewCards() {
+        return Collections.singletonList(this.storedCard.makeStatEquivalentCopy());
     }
 
-    private boolean isReplayPending(AbstractPlayer player) {
-        if (this.queuedCards.contains(player.cardInUse)) {
-            return true;
-        }
+    @Override
+    public boolean expiresAtEndOfTurn() {
+        return this.storedCard.exhaust || this.storedCard.type == AbstractCard.CardType.POWER;
+    }
 
-        for (CardQueueItem item : AbstractDungeon.actionManager.cardQueue) {
-            if (this.queuedCards.contains(item.card)) {
-                return true;
-            }
-        }
-        this.queuedCards.clear();
-        return false;
+    @Override
+    public void atEndOfTurn(AbstractPlayer player) {
+        this.playback.play(player, Collections.singletonList(this.storedCard));
+    }
+
+    @Override
+    public boolean isReplayPending(AbstractPlayer player) {
+        return this.playback.isPending(player);
     }
 }

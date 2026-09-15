@@ -1,0 +1,9 @@
+{
+  "Ptilopsis:RhineLabBadge": {
+    "NAME": "Rhine Lab Badge",
+    "FLAVOR": "Ptilopsis's employee identification.",
+    "DESCRIPTIONS": [
+      "At the start of combat, construct #b1 empty Mutable Thread."
+    ]
+  }
+}

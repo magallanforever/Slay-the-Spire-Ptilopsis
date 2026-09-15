@@ -1,14 +1,17 @@
 package Ptilopsis.threads.effects;
 
 import Ptilopsis.threads.ThreadFunction;
-import com.megacrit.cardcrawl.actions.common.DrawCardAction;
-import com.megacrit.cardcrawl.actions.common.GainEnergyAction;
+import Ptilopsis.threads.ThreadCardPlayback;
+import Ptilopsis.cards.ThreadEffectCard;
+import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import java.util.Collections;
+import java.util.List;
 
 public class WakeRoutineThreadEffect implements ThreadFunction {
     private final String displayName;
     private final int drawAmount;
+    private final ThreadCardPlayback playback = new ThreadCardPlayback();
 
     public WakeRoutineThreadEffect(String displayName, int drawAmount) {
         this.displayName = displayName;
@@ -22,7 +25,17 @@ public class WakeRoutineThreadEffect implements ThreadFunction {
 
     @Override
     public void atStartOfTurn(AbstractPlayer player) {
-        AbstractDungeon.actionManager.addToBottom(new DrawCardAction(player, this.drawAmount));
+        this.playback.play(player, makePreviewCards());
+    }
+
+    @Override
+    public List<AbstractCard> makePreviewCards() {
+        return Collections.singletonList(new ThreadEffectCard(ThreadEffectCard.Effect.DRAW, this.drawAmount));
+    }
+
+    @Override
+    public boolean runsAtStartOfTurn() {
+        return true;
     }
 
     @Override
@@ -32,11 +45,14 @@ public class WakeRoutineThreadEffect implements ThreadFunction {
 
     @Override
     public void onDestruct(AbstractPlayer player) {
-        gainEnergyAndDraw(player);
+        this.playback.playDestruction(player, recoveryCards());
     }
 
     private void gainEnergyAndDraw(AbstractPlayer player) {
-        AbstractDungeon.actionManager.addToBottom(new GainEnergyAction(1));
-        AbstractDungeon.actionManager.addToBottom(new DrawCardAction(player, 1));
+        this.playback.play(player, recoveryCards());
+    }
+
+    private List<AbstractCard> recoveryCards() {
+        return Collections.singletonList(new ThreadEffectCard(ThreadEffectCard.Effect.RECOVER, 1));
     }
 }

@@ -11,7 +11,7 @@ public class Muelsyse extends AbstractPtilopsisCard {
     public static final String ID = Ptilopsis.makeID(Muelsyse.class.getSimpleName());
     private static final int BASE_COST_MASK = 15;
     private static final int UPGRADE_COST_MASK = 7;
-    private static final int HEAL = 25;
+    private static final int HEAL = 18;
 
     public Muelsyse() {
         super(ID, BASE_COST_MASK, CardType.SKILL, CardRarity.RARE, CardTarget.SELF);

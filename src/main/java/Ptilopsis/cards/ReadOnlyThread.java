@@ -9,21 +9,21 @@ public class ReadOnlyThread extends AbstractThreadEffectCard {
 
     public ReadOnlyThread() {
         super(ID, 1, CardRarity.BASIC, InstallMode.READ_ONLY);
-        this.block = this.baseBlock = 4;
+        this.block = this.baseBlock = 3;
         this.magicNumber = this.baseMagicNumber = 1;
         this.selfRetain = true;
     }
 
     @Override
     protected ThreadFunction createThreadEffect() {
-        return new GuardThreadEffect(this.name, this.block, this.magicNumber);
+        return new GuardThreadEffect(this.name, this.baseBlock, this.magicNumber);
     }
 
     @Override
     public void upgrade() {
         if (!this.upgraded) {
             upgradeName();
-            upgradeBlock(3);
+            upgradeBlock(2);
         }
     }
 }

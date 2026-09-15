@@ -1,15 +1,18 @@
 package Ptilopsis.threads.effects;
 
 import Ptilopsis.threads.ThreadFunction;
-import com.megacrit.cardcrawl.actions.common.DrawCardAction;
-import com.megacrit.cardcrawl.actions.common.GainBlockAction;
+import Ptilopsis.threads.ThreadCardPlayback;
+import Ptilopsis.cards.ThreadEffectCard;
+import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import java.util.Collections;
+import java.util.List;
 
 public class GuardThreadEffect implements ThreadFunction {
     private final String displayName;
     private final int block;
     private final int drawOnDestruct;
+    private final ThreadCardPlayback playback = new ThreadCardPlayback();
 
     public GuardThreadEffect(String displayName, int block, int drawOnDestruct) {
         this.displayName = displayName;
@@ -24,18 +27,24 @@ public class GuardThreadEffect implements ThreadFunction {
 
     @Override
     public void onConstruct(AbstractPlayer player) {
-        AbstractDungeon.actionManager.addToBottom(new GainBlockAction(player, player, this.block));
+        this.playback.play(player, makePreviewCards());
     }
 
     @Override
     public void atEndOfTurn(AbstractPlayer player) {
-        AbstractDungeon.actionManager.addToBottom(new GainBlockAction(player, player, this.block));
+        this.playback.play(player, makePreviewCards());
+    }
+
+    @Override
+    public List<AbstractCard> makePreviewCards() {
+        return Collections.singletonList(new ThreadEffectCard(ThreadEffectCard.Effect.GUARD, this.block));
     }
 
     @Override
     public void onDestruct(AbstractPlayer player) {
         if (this.drawOnDestruct > 0) {
-            AbstractDungeon.actionManager.addToBottom(new DrawCardAction(player, this.drawOnDestruct));
+            this.playback.playDestruction(player, Collections.singletonList(
+                    new ThreadEffectCard(ThreadEffectCard.Effect.DRAW, this.drawOnDestruct)));
         }
     }
 }

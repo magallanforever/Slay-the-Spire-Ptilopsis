@@ -12,7 +12,7 @@ public class WakeRoutine extends AbstractThreadEffectCard {
 
     public WakeRoutine() {
         super(ID, 1, CardRarity.COMMON, InstallMode.READ_ONLY);
-        this.magicNumber = this.baseMagicNumber = 2;
+        this.magicNumber = this.baseMagicNumber = 1;
         this.exhaust = false;
     }
 

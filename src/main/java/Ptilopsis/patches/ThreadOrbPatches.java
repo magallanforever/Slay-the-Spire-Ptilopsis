@@ -20,13 +20,6 @@ public class ThreadOrbPatches {
             while (player.maxOrbs < 3) {
                 player.increaseMaxOrbSlots(1, false);
             }
-            for (int i = 0; i < 3; i++) {
-                if (i >= player.orbs.size()) {
-                    player.orbs.add(new ThreadOrb(true));
-                } else if (!(player.orbs.get(i) instanceof ThreadOrb)) {
-                    player.orbs.set(i, new ThreadOrb(true));
-                }
-            }
             for (int i = 0; i < player.orbs.size(); i++) {
                 AbstractOrb orb = player.orbs.get(i);
                 orb.setSlot(i, player.maxOrbs);

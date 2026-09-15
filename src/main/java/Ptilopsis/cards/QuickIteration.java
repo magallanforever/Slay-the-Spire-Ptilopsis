@@ -10,7 +10,7 @@ public class QuickIteration extends AbstractPtilopsisCard {
 
     public QuickIteration() {
         super(ID, 1, CardType.SKILL, CardRarity.UNCOMMON, CardTarget.SELF);
-        this.magicNumber = this.baseMagicNumber = 3;
+        this.magicNumber = this.baseMagicNumber = 2;
         this.exhaust = true;
     }
 

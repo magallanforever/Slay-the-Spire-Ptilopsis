@@ -2,12 +2,12 @@
   "Ptilopsis:ThreadNetworkPower": {
     "NAME": "Thread Network",
     "DESCRIPTIONS": [
-      "Thread capacity: #b",
-      " . Active slots: ",
+      "Threads: #b",
+      " . In construction order: ",
       "None",
-      "Empty Slot",
+      "Mutable Thread without a function",
       ", ",
-      ". At the start and end of each turn, run each Thread's matching hook."
+      ". Start-of-turn effects activate at the start of your turn; functions activate at the end. Triggering keeps the Thread; destructing frees its slot."
     ]
   },
   "Ptilopsis:ClosurePendingUpgradePower": {
@@ -15,6 +15,36 @@
     "DESCRIPTIONS": [
       "After winning this combat, upgrade #b",
       " random card(s) in your deck."
+    ]
+  },
+  "Ptilopsis:EnkephalinPower": {
+    "NAME": "Enkephalin",
+    "DESCRIPTIONS": [
+      "Each turn, for the first #b",
+      " card(s) you play manually, mount their function into a Mutable Thread and draw 1 card. On the turn you gain this Power, counting starts with your next manually played card."
+    ]
+  },
+  "Ptilopsis:MasterTheoremPower": {
+    "NAME": "Master Theorem",
+    "DESCRIPTIONS": [
+      "At the start of this enemy's turn, it loses #b",
+      " HP. At the end of that turn, halve the stacks, rounded up. The final stack does not expire on its own.",
+      " HP. Extreme Data Construction prevents these stacks from halving at the end of that enemy's turn."
+    ]
+  },
+  "Ptilopsis:ExtremeDataConstructionPower": {
+    "NAME": "Extreme Data Construction",
+    "DESCRIPTIONS": [
+      "Master Theorem you apply no longer halves after causing HP loss."
+    ]
+  },
+  "Ptilopsis:HyperthreadingPower": {
+    "NAME": "Hyperthreading",
+    "DESCRIPTIONS": [
+      "At the end of your turn, trigger your leftmost Thread #b",
+      " additional time(s).",
+      "At the end of your turn, trigger your leftmost and rightmost Threads #b",
+      " additional time(s) each. With only 1 Thread, both sides trigger that Thread."
     ]
   }
 }

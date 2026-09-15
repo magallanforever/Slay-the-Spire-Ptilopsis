@@ -1,52 +1,111 @@
 {
+  "Ptilopsis:MedicalInstruction": {
+    "NAME": "医者·典训",
+    "DESCRIPTION": "给予 !M! 层 易伤 。 NL 造成 !D! 点伤害。 NL ptilopsis:构造 1 个固定 ptilopsis:线程 。 NL ptilopsis:函数 ：对所有敌人造成 3 点伤害。 NL ptilopsis:析构 ：对所有敌人造成 6 点伤害。",
+    "UPGRADE_DESCRIPTION": "给予 !M! 层 易伤 。 NL 造成 !D! 点伤害。 NL ptilopsis:构造 1 个固定 ptilopsis:线程 。 NL ptilopsis:函数 ：对所有敌人造成 4 点伤害。 NL ptilopsis:析构 ：对所有敌人造成 8 点伤害。"
+  },
+  "Ptilopsis:MedicalPulse": {
+    "NAME": "诊疗脉冲",
+    "DESCRIPTION": "对所有敌人造成 !D! 点伤害。"
+  },
+  "Ptilopsis:CacheBarrier": {
+    "NAME": "缓存屏障",
+    "DESCRIPTION": "获得 !B! 点 格挡 。"
+  },
+  "Ptilopsis:WakeSignal": {
+    "NAME": "唤醒信号",
+    "DESCRIPTION": "抽 !M! 张牌。"
+  },
+  "Ptilopsis:EnergyRecovery": {
+    "NAME": "能量回收",
+    "DESCRIPTION": "获得 [E] 。 NL 抽 !M! 张牌。"
+  },
   "Ptilopsis:NeuralStrike": {
     "NAME": "神经冲击",
     "DESCRIPTION": "造成 !D! 点伤害。"
   },
   "Ptilopsis:MemoryGuard": {
     "NAME": "记忆防线",
-    "DESCRIPTION": "获得 !B! 点格挡。"
+    "DESCRIPTION": "获得 !B! 点 格挡 。"
   },
   "Ptilopsis:BootThread": {
     "NAME": "启动线程",
-    "DESCRIPTION": "创建 1 个空可变线程。 NL 获得 !B! 点格挡。 NL 抽 !M! 张牌。"
+    "DESCRIPTION": "ptilopsis:构造 1 个空可变 ptilopsis:线程 。 NL 获得 !B! 点 格挡 。 NL 抽 !M! 张牌。 NL 消耗 。"
   },
   "Ptilopsis:ReadOnlyThread": {
     "NAME": "只读线程",
-    "DESCRIPTION": "保留。消耗。 NL 挂载固定线程：构造和回合结束时，获得 !B! 点格挡。 NL 析构时，抽 !M! 张牌。"
+    "DESCRIPTION": "保留 。 消耗 。 NL ptilopsis:构造 1 个固定 ptilopsis:线程 。 NL ptilopsis:构造 和 ptilopsis:函数 ：获得 !B! 点 格挡 。 NL ptilopsis:析构 ：抽 !M! 张牌。"
   },
   "Ptilopsis:WakeRoutine": {
     "NAME": "唤醒例程",
-    "DESCRIPTION": "抽 !M! 张牌。 NL 挂载固定线程：回合开始时，抽 !M! 张牌。 NL 激发或析构时，获得 [E] 并抽 1 张牌。",
-    "UPGRADE_DESCRIPTION": "固有。 NL 抽 !M! 张牌。 NL 挂载固定线程：回合开始时，抽 !M! 张牌。 NL 激发或析构时，获得 [E] 并抽 1 张牌。"
+    "DESCRIPTION": "抽 !M! 张牌。 NL ptilopsis:构造 1 个固定 ptilopsis:线程 ：回合开始：抽 !M! 张牌。 NL ptilopsis:激发 或 ptilopsis:析构 ：获得 [E] ，抽 1 张牌。",
+    "UPGRADE_DESCRIPTION": "固有 。 NL 抽 !M! 张牌。 NL ptilopsis:构造 1 个固定 ptilopsis:线程 ：回合开始：抽 !M! 张牌。 NL ptilopsis:激发 或 ptilopsis:析构 ：获得 [E] ，抽 1 张牌。"
   },
   "Ptilopsis:CacheRefresh": {
     "NAME": "缓存刷新",
-    "DESCRIPTION": "消耗。 NL 抽 !M! 张牌。每有 1 个已挂载线程，额外抽 1 张牌。"
+    "DESCRIPTION": "抽 !M! 张牌。 NL 每个带有 ptilopsis:函数 的 ptilopsis:线程 额外抽 1 张。 NL 消耗 。"
+  },
+  "Ptilopsis:Enkephalin": {
+    "NAME": "脑啡肽",
+    "DESCRIPTION": "每回合免费 ptilopsis:挂载 首张主动打出的牌，抽 1 张牌。",
+    "UPGRADE_DESCRIPTION": "增加 1 个 ptilopsis:线程 栏位。 NL 每回合免费 ptilopsis:挂载 首张主动打出的牌，抽 1 张牌。"
+  },
+  "Ptilopsis:DivideAndConquer": {
+    "NAME": "分治法",
+    "DESCRIPTION": "给予所有敌人 !M! 层 ptilopsis:主定理 。",
+    "UPGRADE_DESCRIPTION": "给予所有敌人 !M! 层 ptilopsis:主定理 。 NL 消耗 。"
+  },
+  "Ptilopsis:LIS": {
+    "NAME": "最长上升子序列",
+    "DESCRIPTION": "造成 !D! 点伤害。 NL 给予 !M! 层 ptilopsis:主定理 。"
   },
   "Ptilopsis:CoroutineYield": {
     "NAME": "协程让渡",
-    "DESCRIPTION": "消耗。 NL 激发所有线程。"
+    "DESCRIPTION": "ptilopsis:激发 所有 ptilopsis:线程 各 1 次。 NL 消耗 。"
+  },
+  "Ptilopsis:CrystallineDream": {
+    "NAME": "结晶梦境",
+    "DESCRIPTION": "ptilopsis:析构 所有 ptilopsis:线程 。 NL 每 ptilopsis:析构 1 个，获得 !B! 点 格挡 。 NL 消耗 。",
+    "UPGRADE_DESCRIPTION": "ptilopsis:析构 所有 ptilopsis:线程 。 NL 每 ptilopsis:析构 1 个，获得 !B! 点 格挡 。"
+  },
+  "Ptilopsis:Hyperthreading": {
+    "NAME": "超线程",
+    "DESCRIPTION": "回合结束时， ptilopsis:激发 最左侧的 ptilopsis:线程 。",
+    "UPGRADE_DESCRIPTION": "回合结束时， ptilopsis:激发 最左和最右的 ptilopsis:线程 。 NL 仅有 1 个时， ptilopsis:激发 两次。"
+  },
+  "Ptilopsis:MergeSort": {
+    "NAME": "归并排序",
+    "DESCRIPTION": "按费用升序排列抽牌堆。 NL 每个原有 ptilopsis:逆序对 获得 !B! 点 格挡 。",
+    "UPGRADE_DESCRIPTION": "按费用升序排列抽牌堆。 NL 每个原有 ptilopsis:逆序对 获得 !B! 点 格挡 。 NL 抽 !M! 张牌。"
   },
   "Ptilopsis:QuickIteration": {
     "NAME": "快速迭代",
-    "DESCRIPTION": "消耗。 NL 将 !M! 张随机本职业牌加入手牌。它们变为 0 费并获得消耗。"
+    "DESCRIPTION": "将 !M! 张随机本职业牌加入手牌，本场战斗变为 0 费并获得 消耗 。 NL 消耗 。"
   },
   "Ptilopsis:Offline": {
     "NAME": "离线",
-    "DESCRIPTION": "选择至多 !M! 张手牌并消耗。 NL 按选择顺序挂载固定线程：回合结束时，免费打出这些牌的复制体，攻击牌随机目标。 NL 析构时，获得 !B! 点格挡。",
-    "EXTENDED_DESCRIPTION": ["选择要封装的牌（可少选）"]
+    "DESCRIPTION": "消耗 至多 !M! 张手牌，封装为固定 ptilopsis:线程 。 NL ptilopsis:函数 ：依次免费打出临时复制品，随机目标。 NL ptilopsis:析构 ：获得 !B! 点 格挡 。",
+    "EXTENDED_DESCRIPTION": ["选择封装的牌（可不选）"]
   },
   "Ptilopsis:Magallan": {
     "NAME": "麦哲伦",
-    "DESCRIPTION": "保留。消耗。 NL 每使用 1 张其他牌，本牌本场战斗费用 -1。 NL 打出后，本回合结束时获得 1 个额外回合。"
+    "DESCRIPTION": "保留 。 消耗 。 NL 每打出 1 张其他牌，本场战斗费用 -1。 NL 本回合结束后，获得额外回合。"
+  },
+  "Ptilopsis:Rosmontis": {
+    "NAME": "迷迭香",
+    "DESCRIPTION": "对所有敌人造成 !D! 点伤害。 NL 每个 ptilopsis:线程 追加 1 次 ptilopsis:余震 。"
+  },
+  "Ptilopsis:ExtremeDataConstruction": {
+    "NAME": "极端数据构造",
+    "DESCRIPTION": "你施加的 ptilopsis:主定理 不再衰减。",
+    "UPGRADE_DESCRIPTION": "你施加的 ptilopsis:主定理 不再衰减。 NL 抽 !M! 张牌。"
   },
   "Ptilopsis:Muelsyse": {
     "NAME": "缪尔赛斯",
-    "DESCRIPTION": "她会在恰当的时候帮你！ NL 恢复 !M! 点生命。 NL 消耗。"
+    "DESCRIPTION": "她会在恰当的时候帮你！ NL 恢复 !M! 点生命。 NL 消耗 。"
   },
   "Ptilopsis:Closure": {
     "NAME": "可露希尔",
-    "DESCRIPTION": "固有。消耗。 NL 花费至多 !M! 金币。 NL 本场战斗升级所有牌。 NL 战斗胜利后，随机升级牌组中 1 张牌。"
+    "DESCRIPTION": "固有 。 消耗 。 NL 花费至多 !M! 金币，本场战斗 升级 所有牌。 NL 获胜后，随机 升级 牌组中 1 张牌。"
   }
 }

@@ -8,6 +8,7 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.localization.PowerStrings;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
+import com.megacrit.cardcrawl.orbs.EmptyOrbSlot;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +63,16 @@ public class ThreadNetworkPower extends AbstractPower {
         return count;
     }
 
+    public static int threadCount(AbstractPlayer player) {
+        int count = 0;
+        for (AbstractOrb orb : player.orbs) {
+            if (orb instanceof ThreadOrb) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     public void createEmptyMutableSlot() {
         addThreadOrb(new ThreadOrb(true));
         enforceCapacity();
@@ -100,6 +111,59 @@ public class ThreadNetworkPower extends AbstractPower {
         for (ThreadOrb orb : orbs) {
             orb.triggerManual(getOwner());
         }
+    }
+
+    public void triggerLeftmostThread() {
+        List<ThreadOrb> orbs = threadOrbs();
+        if (orbs.isEmpty()) {
+            return;
+        }
+        flash();
+        orbs.get(0).triggerManual(getOwner());
+    }
+
+    public void triggerLeftmostAndRightmostThreads() {
+        List<ThreadOrb> orbs = threadOrbs();
+        if (orbs.isEmpty()) {
+            return;
+        }
+
+        flash();
+        ThreadOrb left = orbs.get(0);
+        ThreadOrb right = orbs.get(orbs.size() - 1);
+        left.triggerManual(getOwner());
+        right.triggerManual(getOwner());
+    }
+
+    public int destructAllThreads() {
+        List<ThreadOrb> orbs = threadOrbs();
+        int count = 0;
+        for (ThreadOrb orb : orbs) {
+            if (removeThreadOrb(orb)) {
+                count++;
+            }
+        }
+        relayoutOrbs();
+        refreshPowerState();
+        return count;
+    }
+
+    public void destructThread(ThreadOrb orb) {
+        if (removeThreadOrb(orb)) {
+            relayoutOrbs();
+            refreshPowerState();
+        }
+    }
+
+    private boolean removeThreadOrb(ThreadOrb orb) {
+        AbstractPlayer player = getOwner();
+        int index = player.orbs.indexOf(orb);
+        if (index < 0) {
+            return false;
+        }
+        orb.destroy(player);
+        player.orbs.set(index, new EmptyOrbSlot());
+        return true;
     }
 
     public void triggerStartOfTurnThreads() {
@@ -142,7 +206,7 @@ public class ThreadNetworkPower extends AbstractPower {
         builder.append(strings.DESCRIPTIONS[0])
                 .append(orbs.size())
                 .append("/")
-                .append(MAX_THREADS)
+                .append(maxThreadCount())
                 .append(strings.DESCRIPTIONS[1]);
 
         if (orbs.isEmpty()) {
@@ -179,7 +243,7 @@ public class ThreadNetworkPower extends AbstractPower {
 
     private void enforceCapacity() {
         List<ThreadOrb> orbs = threadOrbs();
-        while (orbs.size() > MAX_THREADS) {
+        while (orbs.size() > maxThreadCount()) {
             ThreadOrb removed = orbs.get(0);
             removed.destroy(getOwner());
             getOwner().orbs.remove(removed);
@@ -190,10 +254,8 @@ public class ThreadNetworkPower extends AbstractPower {
 
     private void addThreadOrb(ThreadOrb orb) {
         AbstractPlayer player = getOwner();
-        List<ThreadOrb> orbs = threadOrbs();
-        for (ThreadOrb existing : orbs) {
-            if (existing.isEmpty()) {
-                int index = player.orbs.indexOf(existing);
+        for (int index = 0; index < player.orbs.size(); index++) {
+            if (player.orbs.get(index) instanceof EmptyOrbSlot) {
                 player.orbs.set(index, orb);
                 orb.setSlot(index, player.maxOrbs);
                 return;
@@ -205,10 +267,7 @@ public class ThreadNetworkPower extends AbstractPower {
     }
 
     private void destroyAllThreads() {
-        for (ThreadOrb orb : threadOrbs()) {
-            orb.destroy(getOwner());
-        }
-        refreshPowerState();
+        destructAllThreads();
     }
 
     private int countActiveThreads() {
@@ -240,6 +299,10 @@ public class ThreadNetworkPower extends AbstractPower {
 
     private AbstractPlayer getOwner() {
         return (AbstractPlayer) this.owner;
+    }
+
+    private int maxThreadCount() {
+        return Math.max(MAX_THREADS, getOwner().maxOrbs);
     }
 
     private void refreshPowerState() {

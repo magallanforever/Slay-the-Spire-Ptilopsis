@@ -2,12 +2,12 @@
   "Ptilopsis:ThreadNetworkPower": {
     "NAME": "线程网络",
     "DESCRIPTIONS": [
-      "线程容量：#b",
-      " 。当前槽位：",
+      "线程：#b",
+      " 。从左到右：",
       "无",
-      "空槽",
+      "空可变线程",
       "，",
-      "。每回合开始和结束时，依次执行所有线程在对应时机的钩子。"
+      "。回合结束时执行函数。"
     ]
   },
   "Ptilopsis:ClosurePendingUpgradePower": {
@@ -15,6 +15,36 @@
     "DESCRIPTIONS": [
       "战斗胜利后，随机升级你卡组中的 #b",
       " 张牌。"
+    ]
+  },
+  "Ptilopsis:EnkephalinPower": {
+    "NAME": "脑啡肽",
+    "DESCRIPTIONS": [
+      "每回合，你主动打出的前 #b",
+      " 张牌各挂载一次，并抽 1 张牌。获得此能力时，从下一张起计。"
+    ]
+  },
+  "Ptilopsis:MasterTheoremPower": {
+    "NAME": "主定理",
+    "DESCRIPTIONS": [
+      "该敌人回合开始时，失去 #b",
+      " 点生命。回合结束时层数减半，向上取整。",
+      " 点生命。层数不再衰减。"
+    ]
+  },
+  "Ptilopsis:ExtremeDataConstructionPower": {
+    "NAME": "极端数据构造",
+    "DESCRIPTIONS": [
+      "你施加的主定理不再衰减。"
+    ]
+  },
+  "Ptilopsis:HyperthreadingPower": {
+    "NAME": "超线程",
+    "DESCRIPTIONS": [
+      "回合结束时，额外激发最左侧的线程 #b",
+      " 次。",
+      "回合结束时，额外激发最左侧和最右侧的线程各 #b",
+      " 次。仅有 1 个时，触发次数翻倍。"
     ]
   }
 }

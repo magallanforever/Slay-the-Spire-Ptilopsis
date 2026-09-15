@@ -3,8 +3,10 @@ package Ptilopsis.character;
 import Ptilopsis.Ptilopsis;
 import Ptilopsis.cards.BootThread;
 import Ptilopsis.cards.MemoryGuard;
+import Ptilopsis.cards.MedicalInstruction;
 import Ptilopsis.cards.NeuralStrike;
 import Ptilopsis.cards.ReadOnlyThread;
+import Ptilopsis.relics.RhineLabBadge;
 import basemod.abstracts.CustomPlayer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -94,13 +96,14 @@ public class PtilopsisCharacter extends CustomPlayer {
         }
         deck.add(BootThread.ID);
         deck.add(ReadOnlyThread.ID);
+        deck.add(MedicalInstruction.ID);
         return deck;
     }
 
     @Override
     public ArrayList<String> getStartingRelics() {
         ArrayList<String> relics = new ArrayList<>();
-        relics.add("DataDisk");
+        relics.add(RhineLabBadge.ID);
         return relics;
     }
 

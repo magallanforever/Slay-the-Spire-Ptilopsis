@@ -1,0 +1,10 @@
+{
+  "Ptilopsis:SourcePrivateKey": {
+    "NAME": "Source Private Key",
+    "DESCRIPTIONS": [
+      "Choose 1 of 3 cards that are as perfect as possible to add to your hand. It costs #b0 this turn.",
+      "Choose 1 of 3 cards that are as perfect as possible. Add 2 copies to your hand. They cost #b0 this turn.",
+      "Choose a card that is as perfect as possible"
+    ]
+  }
+}
