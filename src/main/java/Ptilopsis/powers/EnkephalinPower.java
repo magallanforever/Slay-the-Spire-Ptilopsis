@@ -15,7 +15,7 @@ import com.megacrit.cardcrawl.powers.AbstractPower;
 public class EnkephalinPower extends AbstractPower {
     public static final String POWER_ID = Ptilopsis.makeID("EnkephalinPower");
 
-    private int remainingThisTurn;
+    private int cardsTriggeredThisTurn;
 
     public EnkephalinPower(AbstractPlayer owner, int amount) {
         this.ID = POWER_ID;
@@ -24,7 +24,7 @@ public class EnkephalinPower extends AbstractPower {
         this.type = PowerType.BUFF;
         this.isTurnBased = false;
         this.amount = amount;
-        this.remainingThisTurn = amount;
+        this.cardsTriggeredThisTurn = 0;
         loadRegion("draw");
         updateDescription();
     }
@@ -32,22 +32,21 @@ public class EnkephalinPower extends AbstractPower {
     @Override
     public void stackPower(int stackAmount) {
         super.stackPower(stackAmount);
-        this.remainingThisTurn += stackAmount;
         updateDescription();
     }
 
     @Override
     public void atStartOfTurn() {
-        this.remainingThisTurn = this.amount;
+        this.cardsTriggeredThisTurn = 0;
     }
 
     @Override
     public void onUseCard(AbstractCard card, UseCardAction action) {
-        if (this.remainingThisTurn <= 0 || card.isInAutoplay || card.purgeOnUse) {
+        if (this.cardsTriggeredThisTurn >= this.amount || card.isInAutoplay || card.purgeOnUse) {
             return;
         }
 
-        this.remainingThisTurn--;
+        this.cardsTriggeredThisTurn++;
         flash();
         AbstractPlayer player = (AbstractPlayer) this.owner;
         AbstractDungeon.actionManager.addToBottom(new ThreadCommandAction(

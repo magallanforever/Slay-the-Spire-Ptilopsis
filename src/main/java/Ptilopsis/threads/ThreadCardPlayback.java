@@ -37,6 +37,7 @@ public final class ThreadCardPlayback {
         this.queuedCards.removeIf(card -> !isPending(player, card));
         for (AbstractCard template : templates) {
             AbstractCard card = template.makeStatEquivalentCopy();
+            card.exhaust = template.exhaust;
             card.freeToPlayOnce = true;
             card.purgeOnUse = true;
             card.current_x = card.target_x = player.drawX;

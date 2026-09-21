@@ -41,7 +41,7 @@ public class GuardThreadEffect implements ThreadFunction {
     }
 
     @Override
-    public void onDestruct(AbstractPlayer player) {
+    public void triggerDestructEffect(AbstractPlayer player) {
         if (this.drawOnDestruct > 0) {
             this.playback.playDestruction(player, Collections.singletonList(
                     new ThreadEffectCard(ThreadEffectCard.Effect.DRAW, this.drawOnDestruct)));

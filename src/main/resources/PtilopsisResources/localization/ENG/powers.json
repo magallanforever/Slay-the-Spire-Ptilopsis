@@ -1,14 +1,11 @@
 {
-  "Ptilopsis:ThreadNetworkPower": {
-    "NAME": "Thread Network",
-    "DESCRIPTIONS": [
-      "Threads: #b",
-      " . In construction order: ",
-      "None",
-      "Mutable Thread without a function",
-      ", ",
-      ". Start-of-turn effects activate at the start of your turn; functions activate at the end. Triggering keeps the Thread; destructing frees its slot."
-    ]
+  "Ptilopsis:SilencePower": {
+    "NAME": "Silence",
+    "DESCRIPTIONS": ["At turn start, repeat #b", " time(s): choose 1 of 3 random class cards twice, then mount both in a new Mutable Thread."]
+  },
+  "Ptilopsis:StunPower": {
+    "NAME": "Stunned",
+    "DESCRIPTIONS": ["Skip the next #b", " action(s)."]
   },
   "Ptilopsis:ClosurePendingUpgradePower": {
     "NAME": "Engineering Support",
@@ -29,11 +26,11 @@
     "DESCRIPTIONS": [
       "At the start of this enemy's turn, it loses #b",
       " HP. At the end of that turn, halve the stacks, rounded up. The final stack does not expire on its own.",
-      " HP. Extreme Data Construction prevents these stacks from halving at the end of that enemy's turn."
+      " HP. Hack it! prevents these stacks from halving at the end of that enemy's turn."
     ]
   },
   "Ptilopsis:ExtremeDataConstructionPower": {
-    "NAME": "Extreme Data Construction",
+    "NAME": "Hack it!",
     "DESCRIPTIONS": [
       "Master Theorem you apply no longer halves after causing HP loss."
     ]
@@ -41,10 +38,10 @@
   "Ptilopsis:HyperthreadingPower": {
     "NAME": "Hyperthreading",
     "DESCRIPTIONS": [
-      "At the end of your turn, trigger your leftmost Thread #b",
-      " additional time(s).",
-      "At the end of your turn, trigger your leftmost and rightmost Threads #b",
-      " additional time(s) each. With only 1 Thread, both sides trigger that Thread."
+      "At turn end, trigger your leftmost Thread's destruction effect #b",
+      " time(s) without removing it.",
+      "At turn end, trigger your leftmost and rightmost Threads' destruction effects #b",
+      " time(s) each without removing them. With only 1 Thread, both sides trigger it."
     ]
   }
 }

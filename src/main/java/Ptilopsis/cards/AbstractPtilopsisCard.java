@@ -3,7 +3,7 @@ package Ptilopsis.cards;
 import Ptilopsis.Ptilopsis;
 import Ptilopsis.actions.ThreadCommandAction;
 import Ptilopsis.character.PtilopsisCharacter;
-import Ptilopsis.powers.ThreadNetworkPower;
+import Ptilopsis.threads.ThreadNetwork;
 import Ptilopsis.threads.ThreadFunction;
 import basemod.abstracts.CustomCard;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
@@ -68,12 +68,12 @@ public abstract class AbstractPtilopsisCard extends CustomCard {
         addToBot(new ThreadCommandAction(player, ThreadCommandAction.Command.MOUNT_MUTABLE, function));
     }
 
-    protected void triggerAllThreads(AbstractPlayer player) {
-        addToBot(new ThreadCommandAction(player, ThreadCommandAction.Command.TRIGGER_ALL));
+    protected void triggerAllDestructEffects(AbstractPlayer player) {
+        addToBot(new ThreadCommandAction(player, ThreadCommandAction.Command.TRIGGER_ALL_DESTRUCT_EFFECTS));
     }
 
     protected int activeThreadCount(AbstractPlayer player) {
-        return ThreadNetworkPower.activeThreadCount(player);
+        return ThreadNetwork.activeThreadCount(player);
     }
 
     protected void gainEnergy(int amount) {

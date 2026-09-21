@@ -1,7 +1,6 @@
 package Ptilopsis.threads;
 
 import Ptilopsis.Ptilopsis;
-import Ptilopsis.powers.ThreadNetworkPower;
 import Ptilopsis.threads.effects.CardThreadFunction;
 import Ptilopsis.ui.ThreadUiText;
 import basemod.helpers.CardPowerTip;
@@ -16,7 +15,6 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
-import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.MathHelper;
 import com.megacrit.cardcrawl.helpers.PowerTip;
@@ -36,29 +34,29 @@ public class ThreadOrb extends AbstractOrb {
     public static final String ORB_ID = Ptilopsis.makeID("ThreadOrb");
     public static final int MANUAL_MOUNT_COST = 1;
     private static final Logger logger = LogManager.getLogger(ThreadOrb.class.getName());
-    private static final float MENU_W = 176.0F;
-    private static final float MENU_H = 42.0F;
-    private static final float MENU_GAP = 6.0F;
-
-    private static ThreadOrb menuOrb;
     private static ThreadOrb selectingOrb;
     private static ThreadOrb pressedOrb;
     private static long inputFrame = -1L;
     private static boolean wasLeftDown;
     private static boolean leftPressedThisFrame;
     private static boolean leftReleasedThisFrame;
-    private static final Hitbox removeButtonHb = new Hitbox(1.0F, 1.0F);
-    private static final Hitbox closeButtonHb = new Hitbox(1.0F, 1.0F);
 
     private final boolean mutable;
     private ThreadFunction function;
+    private boolean pendingConstruct;
     private ThreadFunction expiringFunction;
     private List<AbstractCard> previewCards;
     private int previewIndex;
 
     public ThreadOrb(boolean mutable) {
+        this(mutable, null);
+    }
+
+    public ThreadOrb(boolean mutable, ThreadFunction function) {
         this.ID = ORB_ID;
         this.mutable = mutable;
+        this.function = function;
+        this.pendingConstruct = function != null;
         this.img = ImageMaster.ORB_PLASMA;
         this.basePassiveAmount = 0;
         this.passiveAmount = 0;
@@ -68,16 +66,20 @@ public class ThreadOrb extends AbstractOrb {
         updateDescription();
     }
 
+    public void onChannel(AbstractPlayer player) {
+        if (this.pendingConstruct) {
+            this.pendingConstruct = false;
+            this.function.onConstruct(player);
+        }
+        player.hand.applyPowers();
+    }
+
     public boolean isMutable() {
         return this.mutable;
     }
 
     public boolean isEmpty() {
         return this.function == null;
-    }
-
-    public String getDisplayName(String emptyName) {
-        return isEmpty() ? emptyName : this.function.getDisplayName();
     }
 
     public void mount(ThreadFunction function, AbstractPlayer player) {
@@ -90,16 +92,14 @@ public class ThreadOrb extends AbstractOrb {
             this.function.onConstruct(player);
         }
         updateDescription();
-        refreshPower(player);
+        player.hand.applyPowers();
     }
 
     public void destroy(AbstractPlayer player) {
+        this.pendingConstruct = false;
         this.expiringFunction = null;
         this.previewCards = null;
         this.previewIndex = 0;
-        if (menuOrb == this) {
-            closeMenu();
-        }
         if (pressedOrb == this) {
             pressedOrb = null;
         }
@@ -108,12 +108,16 @@ public class ThreadOrb extends AbstractOrb {
             this.function = null;
         }
         updateDescription();
-        refreshPower(player);
+        player.hand.applyPowers();
     }
 
-    public void triggerManual(AbstractPlayer player) {
+    public int getBlockGainBonus() {
+        return this.function == null ? 0 : this.function.getBlockGainBonus();
+    }
+
+    public void triggerDestructEffect(AbstractPlayer player) {
         if (this.function != null) {
-            this.function.onManualTrigger(player);
+            this.function.triggerDestructEffect(player);
         }
     }
 
@@ -127,10 +131,16 @@ public class ThreadOrb extends AbstractOrb {
     @Override
     public void onEndOfTurn() {
         if (this.function != null) {
-            this.function.atEndOfTurn(AbstractDungeon.player);
+            triggerEndOfTurnEffect(AbstractDungeon.player);
             if (this.mutable && this.function.expiresAtEndOfTurn()) {
                 this.expiringFunction = this.function;
             }
+        }
+    }
+
+    public void triggerEndOfTurnEffect(AbstractPlayer player) {
+        if (this.function != null) {
+            this.function.atEndOfTurn(player);
         }
     }
 
@@ -145,17 +155,13 @@ public class ThreadOrb extends AbstractOrb {
         // Card effects are queued; keep the thread until its last replay finishes.
         if (this.expiringFunction != null && this.expiringFunction == this.function
                 && !this.expiringFunction.isReplayPending(AbstractDungeon.player)) {
-            ThreadNetworkPower.getOrCreate(AbstractDungeon.player).destructThread(this);
+            ThreadNetwork.forPlayer(AbstractDungeon.player).destructThread(this);
             return;
         }
         updateInputState();
         this.hb.update();
         this.fontScale = MathHelper.scaleLerpSnap(this.fontScale, 0.7F);
         updatePreview();
-
-        if (menuOrb == this) {
-            updateMenu();
-        }
 
         if (!AbstractDungeon.isScreenUp && this.hb.hovered && leftPressedThisFrame) {
             pressedOrb = this;
@@ -169,7 +175,7 @@ public class ThreadOrb extends AbstractOrb {
     }
 
     private void updatePreview() {
-        if (!this.hb.hovered || AbstractDungeon.isScreenUp || menuOrb != null) {
+        if (!this.hb.hovered || AbstractDungeon.isScreenUp) {
             this.previewCards = null;
             this.previewIndex = 0;
             return;
@@ -194,9 +200,13 @@ public class ThreadOrb extends AbstractOrb {
         AbstractCard card = this.previewCards.get(this.previewIndex);
         card.applyPowers();
         card.freeToPlayOnce = true;
-        CardPowerTip tip = new CardPowerTip(card, this.name,
-                ThreadUiText.previewBody(this.function.runsAtStartOfTurn(),
-                        this.mutable && this.function.expiresAtEndOfTurn(), this.previewIndex, count));
+        String body = ThreadUiText.previewBody(this.function.runsAtStartOfTurn(),
+                this.mutable && this.function.expiresAtEndOfTurn(), this.previewIndex, count);
+        String note = this.function.getPreviewNote();
+        if (!note.isEmpty()) {
+            body += " NL " + note;
+        }
+        CardPowerTip tip = new CardPowerTip(card, this.name, body);
         tip.cardScale = 0.8F;
         ArrayList<PowerTip> tips = new ArrayList<>();
         tips.add(tip);
@@ -231,9 +241,6 @@ public class ThreadOrb extends AbstractOrb {
         renderBase(sb);
         renderMarker(sb);
         this.hb.render(sb);
-        if (menuOrb == this) {
-            renderMenu(sb);
-        }
     }
 
     @Override
@@ -251,26 +258,18 @@ public class ThreadOrb extends AbstractOrb {
             return;
         }
 
-        if (!this.mutable) {
-            closeMenu();
+        if (!this.mutable || !isEmpty()) {
             return;
         }
 
-        if (isEmpty()) {
-            closeMenu();
-            if (EnergyPanel.totalCount < MANUAL_MOUNT_COST) {
-                showInsufficientEnergy(player);
-                return;
-            }
-            if (!AbstractDungeon.isScreenUp && !player.hand.isEmpty()) {
-                logger.info("Opening mutable thread hand select. handSize={}", player.hand.size());
-                selectingOrb = this;
-                AbstractDungeon.handCardSelectScreen.open(ThreadUiText.selectCardPrompt(MANUAL_MOUNT_COST), 1, false, true, false, false, true);
-                CardCrawlGame.sound.play("UI_CLICK_1");
-            }
-        } else {
-            logger.info("Toggling mutable thread menu. function={}", this.function.getDisplayName());
-            menuOrb = menuOrb == this ? null : this;
+        if (EnergyPanel.totalCount < MANUAL_MOUNT_COST) {
+            showInsufficientEnergy(player);
+            return;
+        }
+        if (!player.hand.isEmpty()) {
+            logger.info("Opening mutable thread hand select. handSize={}", player.hand.size());
+            selectingOrb = this;
+            AbstractDungeon.handCardSelectScreen.open(ThreadUiText.selectCardPrompt(MANUAL_MOUNT_COST), 1, false, true, false, false, true);
             CardCrawlGame.sound.play("UI_CLICK_1");
         }
     }
@@ -329,7 +328,7 @@ public class ThreadOrb extends AbstractOrb {
     private void renderBase(SpriteBatch sb) {
         Color fill = this.mutable ? Ptilopsis.PTILOPSIS_COLOR.cpy() : Color.SKY.cpy();
         fill.a = isEmpty() ? 0.35F : 0.90F;
-        if (this.hb.hovered || menuOrb == this) {
+        if (this.hb.hovered) {
             fill.a = Math.min(1.0F, fill.a + 0.10F);
         }
 
@@ -385,66 +384,6 @@ public class ThreadOrb extends AbstractOrb {
         FontHelper.renderFontCentered(sb, FontHelper.powerAmountFont, marker, this.cX, this.cY + 4.0F * Settings.scale, Color.WHITE);
     }
 
-    private void renderMenu(SpriteBatch sb) {
-        positionMenuHitboxes();
-        drawMenuButton(sb, removeButtonHb, ThreadUiText.remove(), true);
-        drawMenuButton(sb, closeButtonHb, ThreadUiText.close(), false);
-    }
-
-    private void updateMenu() {
-        if (AbstractDungeon.isScreenUp || !canInteract(AbstractDungeon.player)) {
-            closeMenu();
-            return;
-        }
-        positionMenuHitboxes();
-        removeButtonHb.update();
-        closeButtonHb.update();
-
-        if (removeButtonHb.hovered && leftPressedThisFrame) {
-            logger.info("Removing mutable thread function from menu.");
-            destroy(AbstractDungeon.player);
-            closeMenu();
-            CardCrawlGame.sound.play("UI_CLICK_1");
-        } else if (closeButtonHb.hovered && leftPressedThisFrame) {
-            closeMenu();
-            CardCrawlGame.sound.play("UI_CLICK_1");
-        }
-    }
-
-    private void positionMenuHitboxes() {
-        float w = MENU_W * Settings.scale;
-        float h = MENU_H * Settings.scale;
-        float y = this.cY + 76.0F * Settings.scale;
-        float removeX = this.cX - w - MENU_GAP * Settings.scale;
-        float closeX = this.cX + MENU_GAP * Settings.scale;
-        removeButtonHb.resize(w, h);
-        closeButtonHb.resize(w, h);
-        removeButtonHb.move(removeX + w / 2.0F, y + h / 2.0F);
-        closeButtonHb.move(closeX + w / 2.0F, y + h / 2.0F);
-    }
-
-    private void drawMenuButton(SpriteBatch sb, Hitbox hitbox, String text, boolean removeButton) {
-        Color color = removeButton ? new Color(0.12F, 0.24F, 0.26F, 0.92F) : new Color(0.08F, 0.10F, 0.12F, 0.92F);
-        if (hitbox.hovered) {
-            color.r += 0.10F;
-            color.g += 0.10F;
-            color.b += 0.10F;
-        }
-        sb.setColor(color);
-        sb.draw(ImageMaster.WHITE_SQUARE_IMG, hitbox.x, hitbox.y, hitbox.width, hitbox.height);
-        FontHelper.renderFontCentered(sb,
-                FontHelper.topPanelInfoFont,
-                text,
-                hitbox.cX,
-                hitbox.cY + 5.0F * Settings.scale,
-                Color.WHITE);
-        hitbox.render(sb);
-    }
-
-    private static void closeMenu() {
-        menuOrb = null;
-    }
-
     private static void updateInputState() {
         long frame = Gdx.graphics.getFrameId();
         if (inputFrame == frame) {
@@ -458,10 +397,4 @@ public class ThreadOrb extends AbstractOrb {
         inputFrame = frame;
     }
 
-    private static void refreshPower(AbstractPlayer player) {
-        ThreadNetworkPower power = ThreadNetworkPower.get(player);
-        if (power != null) {
-            power.refreshFromOrbs();
-        }
-    }
 }

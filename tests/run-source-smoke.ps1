@@ -13,14 +13,31 @@ try {
         'target/classes/Ptilopsis/character/PtilopsisCharacter.class',
         'target/classes/Ptilopsis/relics/RhineLabBadge.class',
         'target/classes/Ptilopsis/cards/QuickIteration.class',
+        'target/classes/Ptilopsis/cards/Malloc.class',
+        'target/classes/Ptilopsis/actions/MallocAction.class',
         'target/classes/Ptilopsis/cards/Offline.class',
         'target/classes/Ptilopsis/cards/Muelsyse.class',
         'target/classes/Ptilopsis/cards/Enkephalin.class',
+        'target/classes/Ptilopsis/cards/Capacitor.class',
         'target/classes/Ptilopsis/cards/DivideAndConquer.class',
         'target/classes/Ptilopsis/cards/LIS.class',
+        'target/classes/Ptilopsis/cards/OverflowCheck.class',
+        'target/classes/Ptilopsis/cards/ProtocolConcurrency.class',
+        'target/classes/Ptilopsis/cards/MemoryLeak.class',
+        'target/classes/Ptilopsis/cards/GradientDescent.class',
+        'target/classes/Ptilopsis/cards/BloodBrainBarrier.class',
+        'target/classes/Ptilopsis/actions/BloodBrainBarrierAction.class',
+        'target/classes/Ptilopsis/threads/effects/GradientDescentThreadEffect.class',
         'target/classes/Ptilopsis/cards/MedicalInstruction.class',
         'target/classes/Ptilopsis/threads/effects/MedicalPulseThreadEffect.class',
         'target/classes/Ptilopsis/cards/Rosmontis.class',
+        'target/classes/Ptilopsis/cards/Saria.class',
+        'target/classes/Ptilopsis/cards/Silence.class',
+        'target/classes/Ptilopsis/powers/SilencePower.class',
+        'target/classes/Ptilopsis/actions/SilenceDraftAction.class',
+        'target/classes/Ptilopsis/powers/StunPower.class',
+        'target/classes/Ptilopsis/threads/effects/CalcificationThreadEffect.class',
+        'target/classes/Ptilopsis/patches/CalcificationBlockPatch.class',
         'target/classes/Ptilopsis/cards/ExtremeDataConstruction.class',
         'target/classes/Ptilopsis/cards/CrystallineDream.class',
         'target/classes/Ptilopsis/cards/Hyperthreading.class',
@@ -35,7 +52,7 @@ try {
         'target/classes/Ptilopsis/cards/ThreadEffectCard.class',
         'target/classes/Ptilopsis/patches/ThreadOrbPatches.class',
         'target/classes/Ptilopsis/threads/effects/CardThreadFunction.class',
-        'target/classes/Ptilopsis/powers/ThreadNetworkPower.class',
+        'target/classes/Ptilopsis/threads/ThreadNetwork.class',
         'target/classes/Ptilopsis/powers/EnkephalinPower.class',
         'target/classes/Ptilopsis/powers/MasterTheoremPower.class',
         'target/classes/Ptilopsis/powers/ExtremeDataConstructionPower.class',
@@ -53,7 +70,7 @@ try {
     foreach ($language in @('ZHS', 'ENG')) {
         $cardsPath = Join-Path $root "target/classes/PtilopsisResources/localization/$language/cards.json"
         $cards = Get-Content -LiteralPath $cardsPath -Raw -Encoding UTF8 | ConvertFrom-Json
-        foreach ($id in @('Ptilopsis:CacheBarrier', 'Ptilopsis:WakeSignal', 'Ptilopsis:EnergyRecovery', 'Ptilopsis:MedicalInstruction', 'Ptilopsis:MedicalPulse')) {
+        foreach ($id in @('Ptilopsis:CacheBarrier', 'Ptilopsis:WakeSignal', 'Ptilopsis:EnergyRecovery', 'Ptilopsis:MedicalInstruction', 'Ptilopsis:MedicalPulse', 'Ptilopsis:CalcificationGuard', 'Ptilopsis:CalcificationRelease', 'Ptilopsis:Saria', 'Ptilopsis:GradientDescent', 'Ptilopsis:GradientStep', 'Ptilopsis:GradientRelease')) {
             if (-not $cards.$id.NAME -or -not $cards.$id.DESCRIPTION) {
                 throw "Missing thread effect card localization: $language $id"
             }

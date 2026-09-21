@@ -57,8 +57,16 @@ public class OfflineThreadEffect implements ThreadFunction {
         if (this.destroyed) {
             return;
         }
+        triggerDestructEffect(player);
         this.destroyed = true;
         this.storedCards.clear();
+    }
+
+    @Override
+    public void triggerDestructEffect(AbstractPlayer player) {
+        if (this.destroyed) {
+            return;
+        }
         this.playback.playDestruction(player, Collections.singletonList(
                 new ThreadEffectCard(ThreadEffectCard.Effect.GUARD, this.blockOnDestruct)));
     }

@@ -49,7 +49,10 @@ foreach ($language in @('ZHS', 'ENG')) {
     foreach ($file in Get-ChildItem -LiteralPath $localization -Filter '*.json') {
         $json = Get-Content -LiteralPath $file.FullName -Raw -Encoding UTF8
         $null = $json | ConvertFrom-Json
-        foreach ($match in [regex]::Matches($json, 'ptilopsis:([\p{L}_]+)')) {
+        if ($json.Contains('激发') -or $json -match 'ptilopsis:Trigger\b') {
+            throw "Obsolete thread terminology: $($file.FullName)"
+        }
+        foreach ($match in [regex]::Matches($json, 'ptilopsis:([\p{L}_]+\+?)')) {
             if ($match.Groups[1].Value -notin $names) {
                 throw "Unknown keyword in ${language}: $($match.Value)"
             }
@@ -60,7 +63,7 @@ foreach ($language in @('ZHS', 'ENG')) {
 $zhsCardsPath = Join-Path $root 'src/main/resources/PtilopsisResources/localization/ZHS/cards.json'
 $zhsCards = Get-Content -LiteralPath $zhsCardsPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $nativeKeywords = @('保留', '消耗', '固有', '格挡', '升级', '易伤')
-$customKeywords = @('线程', '构造', '函数', '挂载', '激发', '析构', '主定理', '逆序对', '余震')
+$customKeywords = @('线程', '构造', '函数', '挂载', '析构', '主定理', '逆序对', '余震', '钙质化', '击晕')
 foreach ($card in $zhsCards.PSObject.Properties) {
     foreach ($field in @('DESCRIPTION', 'UPGRADE_DESCRIPTION')) {
         $description = $card.Value.$field
@@ -84,5 +87,18 @@ foreach ($card in $zhsCards.PSObject.Properties) {
             }
         }
     }
+}
+
+$bootThreadSource = Get-Content -LiteralPath (Join-Path $root 'src/main/java/Ptilopsis/cards/BootThread.java') -Raw -Encoding UTF8
+if ($bootThreadSource -match '\bexhaust\s*=\s*true') {
+    throw 'Boot Thread must not Exhaust.'
+}
+$startingDeckSource = Get-Content -LiteralPath (Join-Path $root 'src/main/java/Ptilopsis/character/PtilopsisCharacter.java') -Raw -Encoding UTF8
+if ($startingDeckSource -match 'deck\.add\(Capacitor\.ID\)') {
+    throw 'Capacitor must not be in the starting deck.'
+}
+$registrationSource = Get-Content -LiteralPath (Join-Path $root 'src/main/java/Ptilopsis/Ptilopsis.java') -Raw -Encoding UTF8
+if ($registrationSource -notmatch 'new Capacitor\(\)') {
+    throw 'Ptilopsis Capacitor must be registered in the card pool.'
 }
 'card_localization_ok'

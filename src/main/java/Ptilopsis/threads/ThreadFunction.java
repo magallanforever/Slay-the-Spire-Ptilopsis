@@ -30,10 +30,18 @@ public interface ThreadFunction {
     default void atEndOfTurn(AbstractPlayer player) {
     }
 
-    default void onManualTrigger(AbstractPlayer player) {
-        atEndOfTurn(player);
+    default int getBlockGainBonus() {
+        return 0;
+    }
+
+    default String getPreviewNote() {
+        return "";
+    }
+
+    default void triggerDestructEffect(AbstractPlayer player) {
     }
 
     default void onDestruct(AbstractPlayer player) {
+        triggerDestructEffect(player);
     }
 }

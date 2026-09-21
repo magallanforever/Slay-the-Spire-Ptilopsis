@@ -1,7 +1,7 @@
 package Ptilopsis.cards;
 
 import Ptilopsis.Ptilopsis;
-import Ptilopsis.powers.ThreadNetworkPower;
+import Ptilopsis.threads.ThreadNetwork;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.common.DamageAllEnemiesAction;
 import com.megacrit.cardcrawl.cards.DamageInfo;
@@ -28,7 +28,7 @@ public class Rosmontis extends AbstractPtilopsisCard {
                 AbstractGameAction.AttackEffect.BLUNT_HEAVY
         ));
 
-        int threadCount = ThreadNetworkPower.threadCount(player);
+        int threadCount = ThreadNetwork.threadCount(player);
         for (int i = 0; i < threadCount; i++) {
             addToBot(new DamageAllEnemiesAction(
                     player,

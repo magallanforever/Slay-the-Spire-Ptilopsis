@@ -1,6 +1,6 @@
 package Ptilopsis.actions;
 
-import Ptilopsis.powers.ThreadNetworkPower;
+import Ptilopsis.threads.ThreadNetwork;
 import Ptilopsis.threads.ThreadFunction;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
@@ -28,22 +28,22 @@ public class ThreadCommandAction extends AbstractGameAction {
         }
 
         AbstractPlayer player = (AbstractPlayer) this.target;
-        if (this.command == Command.TRIGGER_ALL) {
-            ThreadNetworkPower.getOrCreate(player).triggerAllThreads();
-            this.isDone = true;
-            return;
-        }
-
-        ThreadNetworkPower power = ThreadNetworkPower.getOrCreate(player);
+        ThreadNetwork network = ThreadNetwork.forPlayer(player);
         switch (this.command) {
+            case TRIGGER_ALL_DESTRUCT_EFFECTS:
+                network.triggerAllDestructEffects();
+                break;
+            case TRIGGER_ALL_END_OF_TURN_EFFECTS:
+                network.triggerAllEndOfTurnEffects();
+                break;
             case CREATE_EMPTY_MUTABLE:
-                power.createEmptyMutableSlot();
+                network.createEmptyMutableSlot();
                 break;
             case INSTALL_READ_ONLY:
-                power.installReadOnly(this.function);
+                network.installReadOnly(this.function);
                 break;
             case MOUNT_MUTABLE:
-                power.mountMutable(this.function);
+                network.mountMutable(this.function);
                 break;
             default:
                 break;
@@ -56,6 +56,7 @@ public class ThreadCommandAction extends AbstractGameAction {
         CREATE_EMPTY_MUTABLE,
         INSTALL_READ_ONLY,
         MOUNT_MUTABLE,
-        TRIGGER_ALL
+        TRIGGER_ALL_DESTRUCT_EFFECTS,
+        TRIGGER_ALL_END_OF_TURN_EFFECTS
     }
 }

@@ -46,7 +46,13 @@ public class MasterTheoremPower extends AbstractPower {
 
     @Override
     public void atEndOfTurn(boolean isPlayer) {
-        if (isPlayer || this.owner.isPlayer || this.amount <= 1) {
+        if (!isPlayer) {
+            decay();
+        }
+    }
+
+    public void decay() {
+        if (this.owner.isPlayer || this.amount <= 1) {
             return;
         }
 

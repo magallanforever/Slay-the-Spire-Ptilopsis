@@ -17,12 +17,6 @@ public class Hyperthreading extends AbstractPtilopsisCard {
 
     @Override
     public void use(AbstractPlayer player, AbstractMonster monster) {
-        if (this.upgraded) {
-            HyperthreadingPower existing = HyperthreadingPower.get(player);
-            if (existing != null) {
-                existing.enableBothEdges();
-            }
-        }
         addToBot(new ApplyPowerAction(
                 player,
                 player,

@@ -1,6 +1,8 @@
 package Ptilopsis.actions;
 
 import Ptilopsis.character.PtilopsisCharacter;
+import basemod.cardmods.ExhaustMod;
+import basemod.helpers.CardModifierManager;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.common.MakeTempCardInHandAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -29,7 +31,7 @@ public class GenerateDiscountedPtilopsisCardsAction extends AbstractGameAction {
         for (int i = 0; i < this.cardCount; i++) {
             AbstractCard card = cards.get(AbstractDungeon.cardRandomRng.random(cards.size() - 1)).makeStatEquivalentCopy();
             card.modifyCostForCombat(-card.cost);
-            card.exhaust = true;
+            CardModifierManager.addModifier(card, new ExhaustMod());
             addToTop(new MakeTempCardInHandAction(card, true));
         }
 

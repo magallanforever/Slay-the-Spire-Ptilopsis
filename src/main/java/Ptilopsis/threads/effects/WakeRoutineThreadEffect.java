@@ -39,17 +39,8 @@ public class WakeRoutineThreadEffect implements ThreadFunction {
     }
 
     @Override
-    public void onManualTrigger(AbstractPlayer player) {
-        gainEnergyAndDraw(player);
-    }
-
-    @Override
-    public void onDestruct(AbstractPlayer player) {
+    public void triggerDestructEffect(AbstractPlayer player) {
         this.playback.playDestruction(player, recoveryCards());
-    }
-
-    private void gainEnergyAndDraw(AbstractPlayer player) {
-        this.playback.play(player, recoveryCards());
     }
 
     private List<AbstractCard> recoveryCards() {

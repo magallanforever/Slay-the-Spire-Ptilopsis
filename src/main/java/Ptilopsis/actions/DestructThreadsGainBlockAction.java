@@ -1,6 +1,6 @@
 package Ptilopsis.actions;
 
-import Ptilopsis.powers.ThreadNetworkPower;
+import Ptilopsis.threads.ThreadNetwork;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.common.GainBlockAction;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
@@ -24,7 +24,7 @@ public class DestructThreadsGainBlockAction extends AbstractGameAction {
             return;
         }
 
-        int destructed = ThreadNetworkPower.getOrCreate(this.player).destructAllThreads();
+        int destructed = ThreadNetwork.forPlayer(this.player).destructAllThreads();
         if (destructed > 0 && this.blockPerThread > 0) {
             AbstractDungeon.actionManager.addToBottom(new GainBlockAction(
                     this.player,

@@ -17,6 +17,7 @@ public class Muelsyse extends AbstractPtilopsisCard {
         super(ID, BASE_COST_MASK, CardType.SKILL, CardRarity.RARE, CardTarget.SELF);
         this.magicNumber = this.baseMagicNumber = HEAL;
         this.exhaust = true;
+        this.tags.add(CardTags.HEALING);
         configureCostsOnNewCard();
         addRightMomentKeyword();
     }

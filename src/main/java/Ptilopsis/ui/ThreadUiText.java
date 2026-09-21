@@ -17,7 +17,7 @@ public final class ThreadUiText {
     }
 
     public static String emptyMutableTitle() {
-        return isChinese() ? "可变线程（未挂载）" : "Mutable Thread (Empty)";
+        return isChinese() ? "空可变线程" : "Mutable Thread (Empty)";
     }
 
     public static String emptyMutableBody(int energyCost) {
@@ -34,12 +34,12 @@ public final class ThreadUiText {
     }
 
     public static String functionBody(String name, boolean expires) {
-        String body = isChinese() ? "函数：" + name + "。回合结束时免费打出临时复制品，随机目标。"
+        String body = isChinese() ? "函数：" + name + "。 NL 回合结束免费打出临时复制品，随机目标。"
                 : "Function: " + name + ". At turn end, play a temporary copy for free with a random target.";
         if (expires) {
             body += isChinese() ? "结算后析构。" : " Then destruct this Thread.";
         }
-        return body + (isChinese() ? "点击管理函数。" : " Click to manage.");
+        return body;
     }
 
     public static String fixedBody(String name) {
@@ -58,14 +58,6 @@ public final class ThreadUiText {
                     + (isChinese() ? "（滚轮切换）" : " (scroll to browse)");
         }
         return text;
-    }
-
-    public static String remove() {
-        return isChinese() ? "去除函数" : "Remove";
-    }
-
-    public static String close() {
-        return isChinese() ? "关闭" : "Close";
     }
 
     public static String mutableMarker() {

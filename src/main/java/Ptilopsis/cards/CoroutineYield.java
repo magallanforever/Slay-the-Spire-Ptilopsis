@@ -8,13 +8,13 @@ public class CoroutineYield extends AbstractPtilopsisCard {
     public static final String ID = Ptilopsis.makeID(CoroutineYield.class.getSimpleName());
 
     public CoroutineYield() {
-        super(ID, 1, CardType.SKILL, CardRarity.UNCOMMON, CardTarget.SELF);
+        super(ID, 2, CardType.SKILL, CardRarity.UNCOMMON, CardTarget.SELF);
         this.exhaust = true;
     }
 
     @Override
     public void use(AbstractPlayer player, AbstractMonster monster) {
-        triggerAllThreads(player);
+        triggerAllDestructEffects(player);
     }
 
     @Override

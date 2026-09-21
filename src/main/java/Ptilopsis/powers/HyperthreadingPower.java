@@ -1,6 +1,7 @@
 package Ptilopsis.powers;
 
 import Ptilopsis.Ptilopsis;
+import Ptilopsis.threads.ThreadNetwork;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.localization.PowerStrings;
@@ -8,31 +9,19 @@ import com.megacrit.cardcrawl.powers.AbstractPower;
 
 public class HyperthreadingPower extends AbstractPower {
     public static final String POWER_ID = Ptilopsis.makeID("HyperthreadingPower");
+    public static final String UPGRADED_POWER_ID = Ptilopsis.makeID("HyperthreadingPlusPower");
 
-    private boolean bothEdges;
+    private final boolean bothEdges;
 
     public HyperthreadingPower(AbstractPlayer owner, int amount, boolean bothEdges) {
-        this.ID = POWER_ID;
-        this.name = getPowerStrings().NAME;
+        this.ID = bothEdges ? UPGRADED_POWER_ID : POWER_ID;
+        this.name = getPowerStrings().NAME + (bothEdges ? "+" : "");
         this.owner = owner;
         this.amount = amount;
         this.bothEdges = bothEdges;
         this.type = PowerType.BUFF;
         this.isTurnBased = false;
         loadRegion("loop");
-        updateDescription();
-    }
-
-    public static HyperthreadingPower get(AbstractPlayer player) {
-        AbstractPower power = player.getPower(POWER_ID);
-        if (power instanceof HyperthreadingPower) {
-            return (HyperthreadingPower) power;
-        }
-        return null;
-    }
-
-    public void enableBothEdges() {
-        this.bothEdges = true;
         updateDescription();
     }
 
@@ -48,17 +37,14 @@ public class HyperthreadingPower extends AbstractPower {
             return;
         }
 
-        ThreadNetworkPower threadNetwork = ThreadNetworkPower.get((AbstractPlayer) this.owner);
-        if (threadNetwork == null) {
-            return;
-        }
+        ThreadNetwork threadNetwork = ThreadNetwork.forPlayer((AbstractPlayer) this.owner);
 
         flash();
         for (int i = 0; i < this.amount; i++) {
             if (this.bothEdges) {
-                threadNetwork.triggerLeftmostAndRightmostThreads();
+                threadNetwork.triggerEdgeDestructEffects();
             } else {
-                threadNetwork.triggerLeftmostThread();
+                threadNetwork.triggerLeftmostDestructEffect();
             }
         }
     }

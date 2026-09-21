@@ -40,10 +40,6 @@ public class SourcePrivateKeyAction extends AbstractGameAction {
                 LOGGER.info("SourcePrivateKey candidate=" + offer.cardId + " score=" + offer.score);
                 if (choices.size() < 3) {
                     AbstractCard card = CardLibrary.getCard(offer.cardId).makeCopy();
-                    if (AbstractDungeon.player.hasPower(MasterRealityPower.POWER_ID)) {
-                        card.upgrade();
-                    }
-                    card.setCostForTurn(0);
                     choices.add(card);
                 }
             }
@@ -59,9 +55,11 @@ public class SourcePrivateKeyAction extends AbstractGameAction {
         AbstractCard selected = AbstractDungeon.cardRewardScreen.discoveryCard;
         if (selected != null) {
             AbstractCard card = selected.makeStatEquivalentCopy();
-            MakeTempCardInHandAction gainCard = new MakeTempCardInHandAction(card, amount);
+            if (AbstractDungeon.player.hasPower(MasterRealityPower.POWER_ID)) {
+                card.upgrade();
+            }
             card.setCostForTurn(0);
-            addToTop(gainCard);
+            addToTop(new MakeTempCardInHandAction(card, amount));
             AbstractDungeon.cardRewardScreen.discoveryCard = null;
         }
         isDone = true;

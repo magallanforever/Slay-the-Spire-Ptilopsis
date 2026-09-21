@@ -21,6 +21,7 @@ import com.megacrit.cardcrawl.unlock.UnlockTracker;
 
 import Ptilopsis.cards.BootThread;
 import Ptilopsis.cards.CacheRefresh;
+import Ptilopsis.cards.Capacitor;
 import Ptilopsis.cards.Closure;
 import Ptilopsis.cards.CoroutineYield;
 import Ptilopsis.cards.CrystallineDream;
@@ -30,19 +31,29 @@ import Ptilopsis.cards.ExtremeDataConstruction;
 import Ptilopsis.cards.Hyperthreading;
 import Ptilopsis.cards.LIS;
 import Ptilopsis.cards.Magallan;
+import Ptilopsis.cards.Malloc;
 import Ptilopsis.cards.MemoryGuard;
+import Ptilopsis.cards.MemoryLeak;
+import Ptilopsis.cards.GradientDescent;
+import Ptilopsis.cards.BloodBrainBarrier;
 import Ptilopsis.cards.MedicalInstruction;
 import Ptilopsis.cards.MergeSort;
 import Ptilopsis.cards.Muelsyse;
 import Ptilopsis.cards.NeuralStrike;
 import Ptilopsis.cards.Offline;
+import Ptilopsis.cards.OverflowCheck;
+import Ptilopsis.cards.ProtocolConcurrency;
 import Ptilopsis.cards.QuickIteration;
 import Ptilopsis.cards.ReadOnlyThread;
 import Ptilopsis.cards.Rosmontis;
+import Ptilopsis.cards.Saria;
+import Ptilopsis.cards.Silence;
 import Ptilopsis.cards.WakeRoutine;
 import Ptilopsis.character.PtilopsisCharacter;
 import Ptilopsis.potions.SourcePrivateKey;
 import Ptilopsis.relics.RhineLabBadge;
+import Ptilopsis.powers.StunPower;
+import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import basemod.BaseMod;
 import basemod.interfaces.EditCardsSubscriber;
 import basemod.interfaces.EditCharactersSubscriber;
@@ -50,9 +61,10 @@ import basemod.interfaces.EditKeywordsSubscriber;
 import basemod.interfaces.EditRelicsSubscriber;
 import basemod.interfaces.EditStringsSubscriber;
 import basemod.interfaces.PostInitializeSubscriber;
+import basemod.interfaces.PreMonsterTurnSubscriber;
 
 @SpireInitializer
-public class Ptilopsis implements EditCardsSubscriber, EditCharactersSubscriber, EditKeywordsSubscriber, EditRelicsSubscriber, EditStringsSubscriber, PostInitializeSubscriber {
+public class Ptilopsis implements EditCardsSubscriber, EditCharactersSubscriber, EditKeywordsSubscriber, EditRelicsSubscriber, EditStringsSubscriber, PostInitializeSubscriber, PreMonsterTurnSubscriber {
     public static final String MOD_ID = "Ptilopsis";
     private static final String KEYWORD_MOD_ID = MOD_ID.toLowerCase();
 
@@ -133,9 +145,16 @@ public class Ptilopsis implements EditCardsSubscriber, EditCharactersSubscriber,
                 new MedicalInstruction(),
                 new WakeRoutine(),
                 new CacheRefresh(),
+                new Malloc(),
                 new Enkephalin(),
+                new Capacitor(),
                 new DivideAndConquer(),
                 new LIS(),
+                new OverflowCheck(),
+                new ProtocolConcurrency(),
+                new MemoryLeak(),
+                new GradientDescent(),
+                new BloodBrainBarrier(),
                 new CoroutineYield(),
                 new CrystallineDream(),
                 new Hyperthreading(),
@@ -144,6 +163,8 @@ public class Ptilopsis implements EditCardsSubscriber, EditCharactersSubscriber,
                 new Offline(),
                 new Magallan(),
                 new Rosmontis(),
+                new Saria(),
+                new Silence(),
                 new ExtremeDataConstruction(),
                 new Muelsyse(),
                 new Closure()
@@ -159,6 +180,11 @@ public class Ptilopsis implements EditCardsSubscriber, EditCharactersSubscriber,
     public void receiveEditRelics() {
         BaseMod.addRelicToCustomPool(new RhineLabBadge(), PtilopsisCharacter.Enums.PTILOPSIS_COLOR);
         UnlockTracker.markRelicAsSeen(RhineLabBadge.ID);
+    }
+
+    @Override
+    public boolean receivePreMonsterTurn(AbstractMonster monster) {
+        return StunPower.allowTurn(monster);
     }
 
     @Override

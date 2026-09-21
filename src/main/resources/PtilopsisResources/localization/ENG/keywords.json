@@ -1,7 +1,19 @@
 [
   {
+    "NAMES": ["Stun"],
+    "DESCRIPTION": "Skip the enemy's next action. Can be blocked by Artifact."
+  },
+  {
+    "NAMES": ["Calcification"],
+    "DESCRIPTION": "A fixed Thread. Gain 1 extra Block whenever you gain Block. At turn end, gain 3 Block. Destruct: Double your current Block."
+  },
+  {
+    "NAMES": ["Calcification+"],
+    "DESCRIPTION": "A fixed Thread. Gain 1 extra Block whenever you gain Block. At turn end, gain 5 Block. Destruct: Double your current Block."
+  },
+  {
     "NAMES": ["Thread", "threads"],
-    "DESCRIPTION": "Occupies 1 Thread slot. Fixed Threads cannot change functions; Mutable Threads can. A Mutable Thread without a function still counts as a Thread. An unoccupied slot does not."
+    "DESCRIPTION": "Occupies 1 slot. Cards can be mounted in an empty Mutable Thread, but cannot be manually unmounted. Empty Mutable Threads count as Threads; unoccupied slots do not."
   },
   {
     "NAMES": ["Construct"],
@@ -13,15 +25,11 @@
   },
   {
     "NAMES": ["Mount"],
-    "DESCRIPTION": "Store a card's effect in a Mutable Thread. Keep the original. Manual mounting costs 1 Energy; automatic mounting is free. Automatic mounting fills an empty Mutable Thread or replaces the oldest one's function. If none exist, construct one."
-  },
-  {
-    "NAMES": ["Trigger"],
-    "DESCRIPTION": "Activate a Thread's trigger effect once without removing it. Unless specified otherwise, activate its function."
+    "DESCRIPTION": "Store card effects in a Mutable Thread. Keep the original. Manual mounting costs 1 Energy; automatic mounting is free. Unless a new Thread is specified, automatic mounting fills an empty Mutable Thread or replaces the oldest one's function. If none exist, construct one."
   },
   {
     "NAMES": ["Destruct"],
-    "DESCRIPTION": "Remove a Thread, activate its destruction effect, and free its slot. Mutable Threads without a function can also be destructed."
+    "DESCRIPTION": "Remove a Thread and activate its destruction effect. Triggering only the destruction effect does not remove the Thread."
   },
   {
     "NAMES": ["Master Theorem", "master_theorem"],

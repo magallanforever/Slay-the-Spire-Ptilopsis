@@ -5,38 +5,64 @@ import Ptilopsis.threads.ThreadCardPlayback;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CardThreadFunction implements ThreadFunction {
-    private final AbstractCard storedCard;
+    private final List<AbstractCard> storedCards = new ArrayList<>();
     private final ThreadCardPlayback playback = new ThreadCardPlayback();
 
     public CardThreadFunction(AbstractCard card) {
-        this.storedCard = card.makeStatEquivalentCopy();
+        this(Collections.singletonList(card));
+    }
+
+    public CardThreadFunction(List<AbstractCard> cards) {
+        for (AbstractCard card : cards) {
+            this.storedCards.add(copyFunctionCard(card));
+        }
     }
 
     @Override
     public String getDisplayName() {
-        return this.storedCard.name;
+        List<String> names = new ArrayList<>();
+        for (AbstractCard card : this.storedCards) {
+            names.add(card.name);
+        }
+        return String.join(" / ", names);
     }
 
     @Override
     public List<AbstractCard> makePreviewCards() {
-        return Collections.singletonList(this.storedCard.makeStatEquivalentCopy());
+        List<AbstractCard> previews = new ArrayList<>();
+        for (AbstractCard card : this.storedCards) {
+            previews.add(copyFunctionCard(card));
+        }
+        return previews;
     }
 
     @Override
     public boolean expiresAtEndOfTurn() {
-        return this.storedCard.exhaust || this.storedCard.type == AbstractCard.CardType.POWER;
+        for (AbstractCard card : this.storedCards) {
+            if (card.exhaust || card.type == AbstractCard.CardType.POWER) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public void atEndOfTurn(AbstractPlayer player) {
-        this.playback.play(player, Collections.singletonList(this.storedCard));
+        this.playback.play(player, this.storedCards);
     }
 
     @Override
     public boolean isReplayPending(AbstractPlayer player) {
         return this.playback.isPending(player);
+    }
+
+    private static AbstractCard copyFunctionCard(AbstractCard card) {
+        AbstractCard copy = card.makeStatEquivalentCopy();
+        copy.exhaust = card.exhaust;
+        return copy;
     }
 }
