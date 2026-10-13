@@ -18,7 +18,7 @@ public class CardThreadFunction implements ThreadFunction {
 
     public CardThreadFunction(List<AbstractCard> cards) {
         for (AbstractCard card : cards) {
-            this.storedCards.add(copyFunctionCard(card));
+            this.storedCards.add(ThreadCardPlayback.copyTemplate(card));
         }
     }
 
@@ -35,9 +35,14 @@ public class CardThreadFunction implements ThreadFunction {
     public List<AbstractCard> makePreviewCards() {
         List<AbstractCard> previews = new ArrayList<>();
         for (AbstractCard card : this.storedCards) {
-            previews.add(copyFunctionCard(card));
+            previews.add(ThreadCardPlayback.copyTemplate(card));
         }
         return previews;
+    }
+
+    @Override
+    public boolean showsCardPreview() {
+        return true;
     }
 
     @Override
@@ -60,9 +65,4 @@ public class CardThreadFunction implements ThreadFunction {
         return this.playback.isPending(player);
     }
 
-    private static AbstractCard copyFunctionCard(AbstractCard card) {
-        AbstractCard copy = card.makeStatEquivalentCopy();
-        copy.exhaust = card.exhaust;
-        return copy;
-    }
 }

@@ -1,8 +1,17 @@
 {
+  "Ptilopsis:FFT": {
+    "NAME": "FFT",
+    "DESCRIPTION": "From left to right, deal !Ptilopsis:M! × i damage to enemy i. NL i starts at 1."
+  },
+  "Ptilopsis:BootWisdom": {
+    "NAME": "Boot Wisdom",
+    "DESCRIPTION": "Gain 1 Energy. NL Draw 2 Power cards from your draw pile. NL The next 2 Power cards you play this turn cost 0.",
+    "UPGRADE_DESCRIPTION": "Innate. NL Gain 1 Energy. NL Draw 2 Power cards from your draw pile. NL The next 2 Power cards you play this turn cost 0."
+  },
   "Ptilopsis:Malloc": {
     "NAME": "malloc",
-    "DESCRIPTION": "Exhaust. NL ptilopsis:Construct X empty Mutable ptilopsis:Threads.",
-    "UPGRADE_DESCRIPTION": "Exhaust. NL ptilopsis:Construct X empty Mutable ptilopsis:Threads. NL If X is at least 1, gain [E]."
+    "DESCRIPTION": "Exhaust. NL ptilopsis:Construct #yX empty Mutable ptilopsis:Threads.",
+    "UPGRADE_DESCRIPTION": "Exhaust. NL ptilopsis:Construct #yX empty Mutable ptilopsis:Threads. NL If #yX is at least 1, gain [E]."
   },
   "Ptilopsis:Silence": {
     "NAME": "Silence",
@@ -12,38 +21,38 @@
   },
   "Ptilopsis:Saria": {
     "NAME": "Saria",
-    "DESCRIPTION": "Deal !D! damage 3 times. NL ptilopsis:Stun the target. NL ptilopsis:Construct a ptilopsis:Calcification ptilopsis:Thread.",
-    "UPGRADE_DESCRIPTION": "Deal !D! damage 3 times. NL ptilopsis:Stun the target. NL ptilopsis:Construct a ptilopsis:Calcification+ ptilopsis:Thread."
+    "DESCRIPTION": "Deal !Ptilopsis:D! damage 3 times. NL ptilopsis:Stun the target. NL ptilopsis:Construct 1 ptilopsis:Calcification ptilopsis:Thread.",
+    "UPGRADE_DESCRIPTION": "Deal !Ptilopsis:D! damage 3 times. NL ptilopsis:Stun the target. NL ptilopsis:Construct 1 ptilopsis:Calcification+ ptilopsis:Thread."
   },
   "Ptilopsis:CalcificationGuard": {
     "NAME": "Calcification",
-    "DESCRIPTION": "Gain !B! Block.",
-    "EXTENDED_DESCRIPTION": ["Whenever you gain Block, gain 1 extra Block. NL ptilopsis:Destruct: Double your current Block."]
+    "DESCRIPTION": "Gain !Ptilopsis:B! Block.",
+    "EXTENDED_DESCRIPTION": ["Passive: Whenever you gain Block, gain 1 extra Block."]
   },
   "Ptilopsis:CalcificationRelease": {
     "NAME": "Calcium Release",
-    "DESCRIPTION": "Double your current Block."
+    "DESCRIPTION": "Multiply your current Block by 2."
   },
   "Ptilopsis:OverflowCheck": {
     "NAME": "Overflow Check",
-    "DESCRIPTION": "Gain !B! Block. NL Apply !M! ptilopsis:Master_Theorem."
+    "DESCRIPTION": "Gain !Ptilopsis:B! Block. NL Apply !Ptilopsis:M! ptilopsis:Master_Theorem."
   },
   "Ptilopsis:MedicalInstruction": {
     "NAME": "Medic: Instruction",
-    "DESCRIPTION": "Apply !M! Vulnerable and deal !D! damage. NL ptilopsis:Construct 1 Fixed ptilopsis:Thread. NL ptilopsis:Function: Deal #b3 damage to ALL enemies. NL ptilopsis:Destruct: Deal #b6 damage to ALL enemies.",
-    "UPGRADE_DESCRIPTION": "Apply !M! Vulnerable and deal !D! damage. NL ptilopsis:Construct 1 Fixed ptilopsis:Thread. NL ptilopsis:Function: Deal #b4 damage to ALL enemies. NL ptilopsis:Destruct: Deal #b8 damage to ALL enemies."
+    "DESCRIPTION": "Apply !Ptilopsis:M! Vulnerable and deal !Ptilopsis:D! damage. NL ptilopsis:Construct 1 Fixed ptilopsis:Thread. NL ptilopsis:Function: Deal #y3 damage to ALL enemies. NL ptilopsis:Destruct: Deal #y6 damage to ALL enemies.",
+    "UPGRADE_DESCRIPTION": "Apply !Ptilopsis:M! Vulnerable and deal !Ptilopsis:D! damage. NL ptilopsis:Construct 1 Fixed ptilopsis:Thread. NL ptilopsis:Function: Deal #y4 damage to ALL enemies. NL ptilopsis:Destruct: Deal #y8 damage to ALL enemies."
   },
   "Ptilopsis:MedicalPulse": {
     "NAME": "Medical Pulse",
-    "DESCRIPTION": "Deal !D! damage to ALL enemies."
+    "DESCRIPTION": "Deal !Ptilopsis:D! damage to ALL enemies."
   },
   "Ptilopsis:CacheBarrier": {
     "NAME": "Cache Barrier",
-    "DESCRIPTION": "Gain !B! Block."
+    "DESCRIPTION": "Gain !Ptilopsis:B! Block."
   },
   "Ptilopsis:WakeSignal": {
     "NAME": "Wake Signal",
-    "DESCRIPTION": "Draw 1 card."
+    "DESCRIPTION": "Draw !Ptilopsis:M! card(s)."
   },
   "Ptilopsis:EnergyRecovery": {
     "NAME": "Energy Recovery",
@@ -51,7 +60,7 @@
   },
   "Ptilopsis:NeuralStrike": {
     "NAME": "Neural Strike",
-    "DESCRIPTION": "Deal !D! damage."
+    "DESCRIPTION": "Deal !Ptilopsis:D! damage."
   },
   "Ptilopsis:BloodBrainBarrier": {
     "NAME": "Blood-Brain Barrier",
@@ -60,31 +69,31 @@
   },
   "Ptilopsis:GradientDescent": {
     "NAME": "Gradient Descent",
-    "DESCRIPTION": "ptilopsis:Construct 1 fixed ptilopsis:Thread. NL ptilopsis:Function: Apply !M! ptilopsis:Master_Theorem to a random enemy. NL ptilopsis:Destruct: Apply !M! ptilopsis:Master_Theorem to ALL enemies."
+    "DESCRIPTION": "ptilopsis:Construct 1 fixed ptilopsis:Thread. NL ptilopsis:Function: Apply !Ptilopsis:M! ptilopsis:Master_Theorem to a random enemy. NL ptilopsis:Destruct: Apply !Ptilopsis:M! ptilopsis:Master_Theorem to ALL enemies."
   },
   "Ptilopsis:GradientStep": {
     "NAME": "Gradient Step",
-    "DESCRIPTION": "Apply !M! ptilopsis:Master_Theorem to a random enemy."
+    "DESCRIPTION": "Apply !Ptilopsis:M! ptilopsis:Master_Theorem to a random enemy."
   },
   "Ptilopsis:GradientRelease": {
     "NAME": "Gradient Diffusion",
-    "DESCRIPTION": "Apply !M! ptilopsis:Master_Theorem to ALL enemies."
+    "DESCRIPTION": "Apply !Ptilopsis:M! ptilopsis:Master_Theorem to ALL enemies."
   },
   "Ptilopsis:MemoryLeak": {
     "NAME": "Memory Leak",
-    "DESCRIPTION": "Retain. NL Draw !M! cards. NL Add 1 copy of this card to your hand."
+    "DESCRIPTION": "Retain. NL Draw !Ptilopsis:M! cards. NL Add 1 copy of this card to your hand."
   },
   "Ptilopsis:MemoryGuard": {
     "NAME": "Memory Guard",
-    "DESCRIPTION": "Gain !B! Block."
+    "DESCRIPTION": "Gain !Ptilopsis:B! Block."
   },
   "Ptilopsis:BootThread": {
     "NAME": "Boot Thread",
-    "DESCRIPTION": "ptilopsis:Construct 1 empty Mutable ptilopsis:Thread. NL Gain !B! Block. NL Draw 1 card."
+    "DESCRIPTION": "ptilopsis:Construct 1 empty Mutable ptilopsis:Thread. NL Gain !Ptilopsis:B! Block. NL Draw 1 card."
   },
   "Ptilopsis:ReadOnlyThread": {
     "NAME": "Read-Only Thread",
-    "DESCRIPTION": "Exhaust. NL Retain. NL ptilopsis:Construct 1 Fixed ptilopsis:Thread. NL ptilopsis:Construct and ptilopsis:Function: Gain !B! Block. NL ptilopsis:Destruct: Draw 1 card."
+    "DESCRIPTION": "Exhaust. NL Retain. NL ptilopsis:Construct 1 Fixed ptilopsis:Thread. NL ptilopsis:Construct and ptilopsis:Function: Gain !Ptilopsis:B! Block. NL ptilopsis:Destruct: Draw 1 card."
   },
   "Ptilopsis:WakeRoutine": {
     "NAME": "Wake Routine",
@@ -97,12 +106,12 @@
   },
   "Ptilopsis:Enkephalin": {
     "NAME": "Enkephalin",
-    "DESCRIPTION": "Each turn, when you first play a card manually, ptilopsis:Mount its ptilopsis:Function for free and draw 1 card.",
-    "UPGRADE_DESCRIPTION": "Gain 1 ptilopsis:Thread slot. NL Each turn, when you first play a card manually, ptilopsis:Mount its ptilopsis:Function for free and draw 1 card."
+    "DESCRIPTION": "Each turn, when you play your 1st card manually, ptilopsis:Mount its ptilopsis:Function for free and draw 1 card.",
+    "UPGRADE_DESCRIPTION": "Gain 1 ptilopsis:Thread slot. NL Each turn, when you play your 1st card manually, ptilopsis:Mount its ptilopsis:Function for free and draw 1 card."
   },
   "Ptilopsis:Capacitor": {
     "NAME": "Capacitor",
-    "DESCRIPTION": "Gain !M! ptilopsis:Thread slots."
+    "DESCRIPTION": "Gain !Ptilopsis:M! ptilopsis:Thread slots."
   },
   "Ptilopsis:DivideAndConquer": {
     "NAME": "Divide and Conquer",
@@ -111,7 +120,7 @@
   },
   "Ptilopsis:LIS": {
     "NAME": "Longest Increasing Subsequence",
-    "DESCRIPTION": "Deal !D! damage. NL Apply !M! ptilopsis:Master_Theorem."
+    "DESCRIPTION": "Deal !Ptilopsis:D! damage. NL Apply !Ptilopsis:M! ptilopsis:Master_Theorem."
   },
   "Ptilopsis:ProtocolConcurrency": {
     "NAME": "Protocol Concurrency",
@@ -123,8 +132,8 @@
   },
   "Ptilopsis:CrystallineDream": {
     "NAME": "Crystalline Dream",
-    "DESCRIPTION": "Exhaust. NL ptilopsis:Destruct all your ptilopsis:Threads. NL Gain !B! Block for each ptilopsis:Thread destructed.",
-    "UPGRADE_DESCRIPTION": "ptilopsis:Destruct all your ptilopsis:Threads. NL Gain !B! Block for each ptilopsis:Thread destructed."
+    "DESCRIPTION": "Exhaust. NL ptilopsis:Destruct all your ptilopsis:Threads. NL Gain !Ptilopsis:B! Block for each ptilopsis:Thread destructed.",
+    "UPGRADE_DESCRIPTION": "ptilopsis:Destruct all your ptilopsis:Threads. NL Gain !Ptilopsis:B! Block for each ptilopsis:Thread destructed."
   },
   "Ptilopsis:Hyperthreading": {
     "NAME": "Hyperthreading",
@@ -133,16 +142,16 @@
   },
   "Ptilopsis:MergeSort": {
     "NAME": "Merge Sort",
-    "DESCRIPTION": "Sort your draw pile by cost, drawing the cheapest cards first. NL Gain !B! Block for each ptilopsis:Inversion before sorting.",
-    "UPGRADE_DESCRIPTION": "Sort your draw pile by cost, drawing the cheapest cards first. NL Gain !B! Block for each ptilopsis:Inversion before sorting. NL Draw 1 card."
+    "DESCRIPTION": "Sort your draw pile by cost, drawing the cheapest cards first. NL Gain !Ptilopsis:B! Block for each ptilopsis:Inversion before sorting.",
+    "UPGRADE_DESCRIPTION": "Sort your draw pile by cost, drawing the cheapest cards first. NL Gain !Ptilopsis:B! Block for each ptilopsis:Inversion before sorting. NL Draw 1 card."
   },
   "Ptilopsis:QuickIteration": {
     "NAME": "Quick Iteration",
-    "DESCRIPTION": "Exhaust. NL Add !M! random Ptilopsis cards to your hand. NL They cost 0 this combat and gain Exhaust."
+    "DESCRIPTION": "Exhaust. NL Add !Ptilopsis:M! random Ptilopsis cards to your hand. NL They cost 0 this combat and gain Exhaust."
   },
   "Ptilopsis:Offline": {
     "NAME": "Offline",
-    "DESCRIPTION": "Exhaust up to !M! cards from your hand and pack them into 1 Fixed ptilopsis:Thread. NL ptilopsis:Function: Play copies in selection order. NL ptilopsis:Destruct: Gain !B! Block.",
+    "DESCRIPTION": "Exhaust up to !Ptilopsis:M! cards from your hand and pack them into 1 Fixed ptilopsis:Thread. NL ptilopsis:Function: Play copies in selection order. NL ptilopsis:Destruct: Gain !Ptilopsis:B! Block.",
     "EXTENDED_DESCRIPTION": ["Choose cards in replay order (you may choose none)"]
   },
   "Ptilopsis:Magallan": {
@@ -151,7 +160,7 @@
   },
   "Ptilopsis:Rosmontis": {
     "NAME": "Rosmontis",
-    "DESCRIPTION": "Deal !D! damage to ALL enemies. NL For each ptilopsis:Thread, deal 1 ptilopsis:Aftershock to ALL enemies for half the initial damage."
+    "DESCRIPTION": "Deal !Ptilopsis:D! damage to ALL enemies. NL For each ptilopsis:Thread, deal 1 ptilopsis:Aftershock to ALL enemies for 50% of the initial damage."
   },
   "Ptilopsis:ExtremeDataConstruction": {
     "NAME": "Hack it!",
@@ -164,6 +173,6 @@
   },
   "Ptilopsis:Closure": {
     "NAME": "Closure",
-    "DESCRIPTION": "Exhaust. NL Innate. NL Lose !M! Gold, or all your Gold if you have less. NL Upgrade all your cards for this combat. NL After winning, upgrade 1 random card in your deck."
+    "DESCRIPTION": "Exhaust. NL Innate. NL Lose !Ptilopsis:M! Gold, or all your Gold if you have less. NL Upgrade all your cards for this combat. NL After winning, upgrade 1 random card in your deck."
   }
 }

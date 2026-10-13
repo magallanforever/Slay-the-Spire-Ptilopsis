@@ -37,7 +37,11 @@ public class MedicalPulseThreadEffect implements ThreadFunction {
 
     @Override
     public void triggerDestructEffect(AbstractPlayer player) {
-        this.playback.playDestruction(player, Collections.singletonList(
-                new ThreadEffectCard(ThreadEffectCard.Effect.PULSE, this.destructionDamage)));
+        this.playback.playDestruction(player, makeDestructPreviewCards());
+    }
+
+    @Override
+    public List<AbstractCard> makeDestructPreviewCards() {
+        return Collections.singletonList(new ThreadEffectCard(ThreadEffectCard.Effect.PULSE, this.destructionDamage));
     }
 }

@@ -21,43 +21,42 @@ public final class ThreadUiText {
     }
 
     public static String emptyMutableBody(int energyCost) {
-        return isChinese() ? "点击挂载手牌，花费 " + energyCost + " 点能量，原牌保留。"
-                : "Click to mount a card for " + energyCost + " Energy. Keep the original.";
+        return effectsBody("", "", "", false) + " NL "
+                + (isChinese() ? "点击挂载：" + energyCost + " 能量，保留原牌。"
+                : "Click to mount: " + energyCost + " Energy. Keep the original.");
     }
 
     public static String mutableTitle() {
         return isChinese() ? "可变线程" : "Mutable Thread";
     }
 
-    public static String fixedTitle() {
-        return isChinese() ? "固定线程" : "Fixed Thread";
+    public static String effectsBody(String construct, String function, String destruct, boolean atStart) {
+        String timing = isChinese() ? (atStart ? "回合开始，" : "回合结束，")
+                : (atStart ? "At turn start: " : "At turn end: ");
+        return (isChinese() ? "构造：" : "Construct: ") + orNone(construct)
+                + " NL " + (isChinese() ? "函数：" : "Function: ")
+                + (function.isEmpty() ? orNone(function) : timing + function)
+                + " NL " + (isChinese() ? "析构：" : "Destruct: ") + orNone(destruct);
     }
 
-    public static String functionBody(String name, boolean expires) {
-        String body = isChinese() ? "函数：" + name + "。 NL 回合结束免费打出临时复制品，随机目标。"
-                : "Function: " + name + ". At turn end, play a temporary copy for free with a random target.";
-        if (expires) {
-            body += isChinese() ? "结算后析构。" : " Then destruct this Thread.";
-        }
-        return body;
+    private static String orNone(String text) {
+        return text.isEmpty() ? (isChinese() ? "无" : "None") : text;
     }
 
-    public static String fixedBody(String name) {
-        return isChinese() ? "固定函数：" + name : "Fixed function: " + name;
+    public static String replayCards(int count) {
+        if (count == 1) {
+            return isChinese() ? "免费打出预览牌，随机目标。" : "Play the previewed card for free with a random target.";
+        }
+        return isChinese() ? "依次免费打出 " + count + " 张牌，随机目标。"
+                : "Play these " + count + " cards in order for free with random targets.";
     }
 
-    public static String previewBody(boolean atStart, boolean expires, int index, int count) {
-        String text = isChinese()
-                ? (atStart ? "回合开始时免费打出。" : "回合结束时免费打出。")
-                : (atStart ? "Play for free at turn start." : "Play for free at turn end.");
-        if (expires) {
-            text += isChinese() ? "结算后析构。" : " Then destruct.";
-        }
-        if (count > 1) {
-            text += " NL " + (index + 1) + " / " + count
-                    + (isChinese() ? "（滚轮切换）" : " (scroll to browse)");
-        }
-        return text;
+    public static String expiresAfterPlayback() {
+        return isChinese() ? "结算后移除线程。" : " Remove this Thread after playback.";
+    }
+
+    public static String previewPosition(int index, int count) {
+        return (index + 1) + "/" + count + (isChinese() ? "（滚轮切换）" : " (scroll to browse)");
     }
 
     public static String mutableMarker() {

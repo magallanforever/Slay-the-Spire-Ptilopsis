@@ -20,6 +20,9 @@ import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
 
 import Ptilopsis.cards.BootThread;
+import Ptilopsis.cards.BootWisdom;
+import Ptilopsis.cards.FFT;
+import Ptilopsis.cards.GoldCardVariable;
 import Ptilopsis.cards.CacheRefresh;
 import Ptilopsis.cards.Capacitor;
 import Ptilopsis.cards.Closure;
@@ -137,10 +140,13 @@ public class Ptilopsis implements EditCardsSubscriber, EditCharactersSubscriber,
 
     @Override
     public void receiveEditCards() {
+        GoldCardVariable.register();
         List<AbstractCard> cards = Arrays.asList(
                 new NeuralStrike(),
                 new MemoryGuard(),
                 new BootThread(),
+                new BootWisdom(),
+                new FFT(),
                 new ReadOnlyThread(),
                 new MedicalInstruction(),
                 new WakeRoutine(),

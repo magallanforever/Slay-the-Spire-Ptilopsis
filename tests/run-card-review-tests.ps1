@@ -15,6 +15,22 @@ if ($LASTEXITCODE -ne 0) {
 foreach ($language in @('ZHS', 'ENG')) {
     $localization = Join-Path $root "src/main/resources/PtilopsisResources/localization/$language"
     $cards = Get-Content -LiteralPath (Join-Path $localization 'cards.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+    foreach ($card in $cards.PSObject.Properties) {
+        foreach ($description in @($card.Value.DESCRIPTION, $card.Value.UPGRADE_DESCRIPTION) + @($card.Value.EXTENDED_DESCRIPTION)) {
+            if (-not $description) { continue }
+            if ($description -match '#[bgr]\d|![DBM]!') {
+                throw "Card numbers must use gold variables or plain fixed numbers: $language $($card.Name)"
+            }
+            if ($language -eq 'ZHS' -and $description -match '[零一二三四五六七八九十百千万两]') {
+                throw "Card descriptions must use Arabic numerals: $($card.Name)"
+            }
+            foreach ($token in [regex]::Matches($description, '!([^!]+)!')) {
+                if ($token.Groups[1].Value -notin @('Ptilopsis:D', 'Ptilopsis:B', 'Ptilopsis:M')) {
+                    throw "Unregistered card number variable: $($token.Value)"
+                }
+            }
+        }
+    }
     foreach ($sourceFile in Get-ChildItem -LiteralPath (Join-Path $root 'src/main/java/Ptilopsis/cards') -Filter '*.java') {
         $source = Get-Content -LiteralPath $sourceFile.FullName -Raw -Encoding UTF8
         if ($source -notmatch 'public static final String ID\s*=') {

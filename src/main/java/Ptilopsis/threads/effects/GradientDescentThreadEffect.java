@@ -35,7 +35,11 @@ public class GradientDescentThreadEffect implements ThreadFunction {
 
     @Override
     public void triggerDestructEffect(AbstractPlayer player) {
-        this.playback.playDestruction(player, Collections.singletonList(
-                new ThreadEffectCard(ThreadEffectCard.Effect.THEOREM_ALL, this.amount)));
+        this.playback.playDestruction(player, makeDestructPreviewCards());
+    }
+
+    @Override
+    public List<AbstractCard> makeDestructPreviewCards() {
+        return Collections.singletonList(new ThreadEffectCard(ThreadEffectCard.Effect.THEOREM_ALL, this.amount));
     }
 }

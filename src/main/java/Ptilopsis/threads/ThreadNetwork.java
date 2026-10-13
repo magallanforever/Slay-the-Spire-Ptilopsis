@@ -56,7 +56,6 @@ public final class ThreadNetwork {
         }
 
         orb.mount(function, getOwner());
-        refreshCards();
     }
 
     public void installNewMutable(ThreadFunction function) {
@@ -129,12 +128,13 @@ public final class ThreadNetwork {
         if (index < 0) {
             return false;
         }
-        orb.destroy(player);
         // Orb updates iterate this list, so shift slots without changing its size.
         for (int i = index; i < player.orbs.size() - 1; i++) {
             player.orbs.set(i, player.orbs.get(i + 1));
         }
         player.orbs.set(player.orbs.size() - 1, new EmptyOrbSlot());
+        // The slot must already be absent if a destruction callback changes the network.
+        orb.destroy(player);
         return true;
     }
 

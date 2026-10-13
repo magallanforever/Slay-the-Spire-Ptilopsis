@@ -1,4 +1,8 @@
 {
+  "Ptilopsis:FreePowerCardsPower": {
+    "NAME": "Boot Wisdom",
+    "DESCRIPTIONS": ["The next #y", " Power cards you play this turn cost 0."]
+  },
   "Ptilopsis:SilencePower": {
     "NAME": "Silence",
     "DESCRIPTIONS": ["At turn start, repeat #b", " time(s): choose 1 of 3 random class cards twice, then mount both in a new Mutable Thread."]

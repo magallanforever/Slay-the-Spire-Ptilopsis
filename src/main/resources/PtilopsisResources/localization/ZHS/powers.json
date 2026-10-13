@@ -1,4 +1,8 @@
 {
+  "Ptilopsis:FreePowerCardsPower": {
+    "NAME": "启动智慧",
+    "DESCRIPTIONS": ["本回合接下来打出的 #y", " 张能力牌费用为 0。"]
+  },
   "Ptilopsis:SilencePower": {
     "NAME": "赫默",
     "DESCRIPTIONS": ["回合开始时，执行 #b", " 次： NL 从 3 张随机本职业牌中选 1 张，重复一次。将两张牌挂载进同一个新可变线程。"]

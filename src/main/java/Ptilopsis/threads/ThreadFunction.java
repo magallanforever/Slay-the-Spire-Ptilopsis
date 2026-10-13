@@ -3,11 +3,26 @@ package Ptilopsis.threads;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import java.util.List;
+import java.util.Collections;
 
 public interface ThreadFunction {
     String getDisplayName();
 
+    // Return fresh templates for display/playback; these factories must not execute effects.
     List<AbstractCard> makePreviewCards();
+
+    default List<AbstractCard> makeConstructPreviewCards() {
+        return Collections.emptyList();
+    }
+
+    default List<AbstractCard> makeDestructPreviewCards() {
+        return Collections.emptyList();
+    }
+
+    // Arbitrary stored cards keep their native card view; fixed effects use compact text.
+    default boolean showsCardPreview() {
+        return false;
+    }
 
     default boolean runsAtStartOfTurn() {
         return false;

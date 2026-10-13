@@ -15,6 +15,13 @@ import java.util.Set;
 public final class ThreadCardPlayback {
     private final List<AbstractCard> queuedCards = new ArrayList<>();
 
+    /** Preserve dynamically assigned Exhaust, which the game's stat copy omits. */
+    public static AbstractCard copyTemplate(AbstractCard template) {
+        AbstractCard copy = template.makeStatEquivalentCopy();
+        copy.exhaust = template.exhaust;
+        return copy;
+    }
+
     public void play(AbstractPlayer player, List<AbstractCard> templates) {
         queue(player, templates, false);
     }
@@ -36,8 +43,7 @@ public final class ThreadCardPlayback {
         }
         this.queuedCards.removeIf(card -> !isPending(player, card));
         for (AbstractCard template : templates) {
-            AbstractCard card = template.makeStatEquivalentCopy();
-            card.exhaust = template.exhaust;
+            AbstractCard card = copyTemplate(template);
             card.freeToPlayOnce = true;
             card.purgeOnUse = true;
             card.current_x = card.target_x = player.drawX;

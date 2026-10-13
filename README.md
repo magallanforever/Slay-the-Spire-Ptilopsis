@@ -2,63 +2,40 @@
 
 一个以《明日方舟》角色白面鸮为主题的《杀戮尖塔》1 代角色 mod。
 
-核心机制是“线程”：白面鸮可以创建线程槽、挂载函数于回合结束时执行一些效果，部分线程是可变的，代表你可以把手里的某张卡挂上去或者取下来。
+## 玩法与设计
 
-## 构建
+白面鸮围绕“线程”组织战斗。线程占据有限的栏位，在指定时机执行效果。玩家需要安排线程的构造、挂载和析构，在即时收益与后续回合的持续收益之间作出选择。
 
-项目使用 Maven。`pom.xml` 通过 `Steam.path` 找到本地《杀戮尖塔》和 Workshop 依赖：
+- **固定线程**：由卡牌提供预设效果，具有各自的用途。
+- **可变线程**：可以挂载手牌，在回合结束时免费打出临时复制品，原牌保留。已挂载的线程不能手动卸载。
+- **构造与析构**：部分线程在创建或移除时产生额外效果；部分卡牌也能单独触发析构效果并保留线程。栏位已满时，新线程会挤出并析构最早的线程。
 
-```xml
-<Steam.path>C:/Program Files (x86)/Steam/steamapps</Steam.path>
+整体设计以线程为核心：卡牌负责建立和调整线程，能力与遗物提供联动，角色机制与界面围绕这套规则展开。新增内容应能融入已有机制，并让玩家理解其触发时机、代价和收益。
+
+## 安装
+
+需要安装《杀戮尖塔》1 代、ModTheSpire 和 BaseMod。
+
+将 `Ptilopsis.jar` 放入游戏的 `mods` 目录，通过 ModTheSpire 启动游戏，勾选 BaseMod 和本模组。
+
+## 开发与构建
+
+项目使用 Java 8 和 Maven。构建前，在 `pom.xml` 中将 `Steam.path` 设置为包含游戏及 Workshop 模组的 `steamapps` 路径，默认值为：
+
+```text
+C:/Program Files (x86)/Steam/steamapps
 ```
 
-如果你的 Steam 库在其他位置，先修改这个路径。然后在项目根目录执行：
+在项目根目录编译：
 
 ```bash
 mvn -DskipTests compile
 ```
 
-完整打包：
+打包并复制到本地游戏的 `mods` 目录：
 
 ```bash
 mvn package
 ```
 
-构建产物会生成到：
-
-```text
-target/Ptilopsis.jar
-```
-
-`pom.xml` 当前还配置了在 `package` 阶段把 jar 复制到：
-
-```text
-${Steam.path}/common/SlayTheSpire/mods/Ptilopsis.jar
-```
-
-## 安装
-
-确保游戏已经安装：
-
-- ModTheSpire
-- BaseMod
-
-然后把 `target/Ptilopsis.jar` 放到《杀戮尖塔》的 `mods` 目录中，通过 ModTheSpire 启动游戏并勾选本 mod。
-
-## 项目结构
-
-```text
-src/main/java/Ptilopsis/
-  Ptilopsis.java                 mod 入口、颜色、角色、卡牌、本地化和关键词注册
-  actions/                       自定义动作
-  cards/                         卡牌实现
-  character/                     白面鸮角色实现
-  powers/                        线程网络和战后升级能力
-  patches/                       战斗 UI 补丁
-  threads/                       线程接口、槽位和线程效果
-  ui/                            线程交互文案
-
-src/main/resources/
-  ModTheSpire.json
-  PtilopsisResources/            图片与本地化资源
-```
+构建产物为 `target/Ptilopsis.jar`。测试方法与游戏内检查事项见 [测试说明](tests/README.md)。

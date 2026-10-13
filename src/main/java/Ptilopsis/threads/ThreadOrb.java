@@ -1,15 +1,14 @@
 package Ptilopsis.threads;
 
 import Ptilopsis.Ptilopsis;
-import Ptilopsis.threads.effects.CardThreadFunction;
+import Ptilopsis.actions.ManualMountAction;
 import Ptilopsis.ui.ThreadUiText;
-import basemod.helpers.CardPowerTip;
+import Ptilopsis.ui.ThreadPreview;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.actions.GameActionManager;
-import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
@@ -22,31 +21,24 @@ import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
-import com.megacrit.cardcrawl.screens.select.HandCardSelectScreen;
 import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 import com.megacrit.cardcrawl.vfx.ThoughtBubble;
 import java.util.ArrayList;
-import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ThreadOrb extends AbstractOrb {
     public static final String ORB_ID = Ptilopsis.makeID("ThreadOrb");
     public static final int MANUAL_MOUNT_COST = 1;
-    private static final Logger logger = LogManager.getLogger(ThreadOrb.class.getName());
-    private static ThreadOrb selectingOrb;
-    private static ThreadOrb pressedOrb;
-    private static long inputFrame = -1L;
-    private static boolean wasLeftDown;
-    private static boolean leftPressedThisFrame;
-    private static boolean leftReleasedThisFrame;
+    private boolean pressed;
+    private long inputFrame = -1L;
+    private boolean wasLeftDown;
+    private boolean leftPressedThisFrame;
+    private boolean leftReleasedThisFrame;
 
     private final boolean mutable;
     private ThreadFunction function;
     private boolean pendingConstruct;
     private ThreadFunction expiringFunction;
-    private List<AbstractCard> previewCards;
-    private int previewIndex;
+    private ThreadPreview preview;
 
     public ThreadOrb(boolean mutable) {
         this(mutable, null);
@@ -98,14 +90,13 @@ public class ThreadOrb extends AbstractOrb {
     public void destroy(AbstractPlayer player) {
         this.pendingConstruct = false;
         this.expiringFunction = null;
-        this.previewCards = null;
-        this.previewIndex = 0;
-        if (pressedOrb == this) {
-            pressedOrb = null;
-        }
-        if (this.function != null) {
-            this.function.onDestruct(player);
-            this.function = null;
+        this.preview = null;
+        this.pressed = false;
+        // Detach first: callbacks must not see or destruct the old function again.
+        ThreadFunction previous = this.function;
+        this.function = null;
+        if (previous != null) {
+            previous.onDestruct(player);
         }
         updateDescription();
         player.hand.applyPowers();
@@ -130,10 +121,11 @@ public class ThreadOrb extends AbstractOrb {
 
     @Override
     public void onEndOfTurn() {
-        if (this.function != null) {
-            triggerEndOfTurnEffect(AbstractDungeon.player);
-            if (this.mutable && this.function.expiresAtEndOfTurn()) {
-                this.expiringFunction = this.function;
+        ThreadFunction current = this.function;
+        if (current != null) {
+            current.atEndOfTurn(AbstractDungeon.player);
+            if (this.function == current && this.mutable && current.expiresAtEndOfTurn()) {
+                this.expiringFunction = current;
             }
         }
     }
@@ -151,7 +143,6 @@ public class ThreadOrb extends AbstractOrb {
 
     @Override
     public void update() {
-        processSelection(AbstractDungeon.player);
         // Card effects are queued; keep the thread until its last replay finishes.
         if (this.expiringFunction != null && this.expiringFunction == this.function
                 && !this.expiringFunction.isReplayPending(AbstractDungeon.player)) {
@@ -164,60 +155,42 @@ public class ThreadOrb extends AbstractOrb {
         updatePreview();
 
         if (!AbstractDungeon.isScreenUp && this.hb.hovered && leftPressedThisFrame) {
-            pressedOrb = this;
+            this.pressed = true;
         }
-        if (!AbstractDungeon.isScreenUp && pressedOrb == this && this.hb.hovered && leftReleasedThisFrame) {
-            pressedOrb = null;
+        if (!AbstractDungeon.isScreenUp && this.pressed && this.hb.hovered && leftReleasedThisFrame) {
+            this.pressed = false;
             handleClick(AbstractDungeon.player);
-        } else if (pressedOrb == this && leftReleasedThisFrame) {
-            pressedOrb = null;
+        } else if (AbstractDungeon.isScreenUp || leftReleasedThisFrame) {
+            this.pressed = false;
         }
     }
 
     private void updatePreview() {
         if (!this.hb.hovered || AbstractDungeon.isScreenUp) {
-            this.previewCards = null;
-            this.previewIndex = 0;
+            this.preview = null;
             return;
         }
+        ArrayList<PowerTip> tips;
         if (this.function == null) {
-            TipHelper.renderGenericTip(this.cX + 96.0F * Settings.scale,
-                    this.cY + 64.0F * Settings.scale, this.name, this.description);
-            return;
+            tips = new ArrayList<>();
+            tips.add(new PowerTip(this.name, this.description));
+        } else {
+            if (this.preview == null) {
+                this.preview = new ThreadPreview(this.function, this.mutable);
+            }
+            int scroll = InputHelper.scrolledDown ? 1 : InputHelper.scrolledUp ? -1 : 0;
+            tips = this.preview.makeTips(scroll);
         }
-        if (this.previewCards == null) {
-            this.previewCards = this.function.makePreviewCards();
-        }
-        if (this.previewCards.isEmpty()) {
-            return;
-        }
-        int count = this.previewCards.size();
-        if (InputHelper.scrolledDown) {
-            this.previewIndex = (this.previewIndex + 1) % count;
-        } else if (InputHelper.scrolledUp) {
-            this.previewIndex = (this.previewIndex + count - 1) % count;
-        }
-        AbstractCard card = this.previewCards.get(this.previewIndex);
-        card.applyPowers();
-        card.freeToPlayOnce = true;
-        String body = ThreadUiText.previewBody(this.function.runsAtStartOfTurn(),
-                this.mutable && this.function.expiresAtEndOfTurn(), this.previewIndex, count);
-        String note = this.function.getPreviewNote();
-        if (!note.isEmpty()) {
-            body += " NL " + note;
-        }
-        CardPowerTip tip = new CardPowerTip(card, this.name, body);
-        tip.cardScale = 0.8F;
-        ArrayList<PowerTip> tips = new ArrayList<>();
-        tips.add(tip);
+        this.description = tips.get(0).body;
         float width = 320.0F * Settings.scale;
         float x = this.cX + 80.0F * Settings.scale;
         if (x + width > Settings.WIDTH - 30.0F * Settings.scale) {
             x = this.cX - width - 80.0F * Settings.scale;
         }
         x = Math.max(30.0F * Settings.scale, x);
+        float minY = this.function != null && this.function.showsCardPreview() ? 600.0F : 260.0F;
         float y = Math.min(Settings.HEIGHT - 64.0F * Settings.scale,
-                Math.max(this.cY + 160.0F * Settings.scale, 600.0F * Settings.scale));
+                Math.max(this.cY + 160.0F * Settings.scale, minY * Settings.scale));
         TipHelper.queuePowerTips(x, y, tips);
     }
 
@@ -228,11 +201,10 @@ public class ThreadOrb extends AbstractOrb {
             this.description = ThreadUiText.emptyMutableBody(MANUAL_MOUNT_COST);
         } else if (this.mutable) {
             this.name = ThreadUiText.mutableTitle();
-            this.description = ThreadUiText.functionBody(this.function.getDisplayName(),
-                    this.function.expiresAtEndOfTurn());
+            this.description = "";
         } else {
-            this.name = ThreadUiText.fixedTitle();
-            this.description = ThreadUiText.fixedBody(this.function.getDisplayName());
+            this.name = this.function.getDisplayName();
+            this.description = "";
         }
     }
 
@@ -267,43 +239,8 @@ public class ThreadOrb extends AbstractOrb {
             return;
         }
         if (!player.hand.isEmpty()) {
-            logger.info("Opening mutable thread hand select. handSize={}", player.hand.size());
-            selectingOrb = this;
-            AbstractDungeon.handCardSelectScreen.open(ThreadUiText.selectCardPrompt(MANUAL_MOUNT_COST), 1, false, true, false, false, true);
-            CardCrawlGame.sound.play("UI_CLICK_1");
+            AbstractDungeon.actionManager.addToBottom(new ManualMountAction(player, this));
         }
-    }
-
-    private static void processSelection(AbstractPlayer player) {
-        if (selectingOrb == null || AbstractDungeon.isScreenUp) {
-            return;
-        }
-
-        HandCardSelectScreen screen = AbstractDungeon.handCardSelectScreen;
-        ArrayList<AbstractCard> selectedCards = new ArrayList<>(screen.selectedCards.group);
-        screen.selectedCards.clear();
-        screen.wereCardsRetrieved = true;
-        ThreadOrb target = selectingOrb;
-        selectingOrb = null;
-        for (AbstractCard card : selectedCards) {
-            if (!player.hand.contains(card)) {
-                player.hand.addToTop(card);
-            }
-        }
-        if (selectedCards.size() == 1 && canInteract(player)
-                && player.orbs.contains(target) && target.mutable && target.isEmpty()) {
-            if (EnergyPanel.totalCount >= MANUAL_MOUNT_COST) {
-                CardThreadFunction mountedFunction = new CardThreadFunction(selectedCards.get(0));
-                player.energy.use(MANUAL_MOUNT_COST);
-                target.mount(mountedFunction, player);
-                logger.info("Mounted mutable thread function. card={}, energyCost={}",
-                        selectedCards.get(0).name, MANUAL_MOUNT_COST);
-            } else {
-                showInsufficientEnergy(player);
-            }
-        }
-        player.hand.refreshHandLayout();
-        player.hand.applyPowers();
     }
 
     private static boolean canInteract(AbstractPlayer player) {
@@ -384,7 +321,7 @@ public class ThreadOrb extends AbstractOrb {
         FontHelper.renderFontCentered(sb, FontHelper.powerAmountFont, marker, this.cX, this.cY + 4.0F * Settings.scale, Color.WHITE);
     }
 
-    private static void updateInputState() {
+    private void updateInputState() {
         long frame = Gdx.graphics.getFrameId();
         if (inputFrame == frame) {
             return;

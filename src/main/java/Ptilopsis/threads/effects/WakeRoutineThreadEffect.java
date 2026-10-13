@@ -40,10 +40,11 @@ public class WakeRoutineThreadEffect implements ThreadFunction {
 
     @Override
     public void triggerDestructEffect(AbstractPlayer player) {
-        this.playback.playDestruction(player, recoveryCards());
+        this.playback.playDestruction(player, makeDestructPreviewCards());
     }
 
-    private List<AbstractCard> recoveryCards() {
+    @Override
+    public List<AbstractCard> makeDestructPreviewCards() {
         return Collections.singletonList(new ThreadEffectCard(ThreadEffectCard.Effect.RECOVER, 1));
     }
 }

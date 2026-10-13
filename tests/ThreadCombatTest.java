@@ -18,6 +18,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
@@ -83,6 +84,10 @@ public class ThreadCombatTest {
         CardCrawlGame.languagePack = new LocalizedStrings();
         CardCrawlGame.sound = bare(SilentSound.class);
         BitmapFont font = new BitmapFont();
+        TextureAtlas cardAtlas = new TextureAtlas();
+        cardAtlas.addRegion("status/beta", font.getRegion());
+        ReflectionHacks.setPrivateStatic(AbstractCard.class, "cardAtlas", cardAtlas);
+        ReflectionHacks.setPrivateStatic(AbstractCard.class, "oldCardAtlas", cardAtlas);
         for (Field field : ImageMaster.class.getDeclaredFields()) {
             if (field.getType() == Texture.class && Modifier.isStatic(field.getModifiers())
                     && !Modifier.isFinal(field.getModifiers())) {
@@ -190,8 +195,10 @@ public class ThreadCombatTest {
         testThreadLifecycle(player);
         testThreadQueue(player);
         testNativeChannel(player);
+        testReentrantLifecycle(player);
         SilenceTest.run(player);
         CardInteractionTest.run(player);
+        FFTTest.run(player);
         testStun();
         testBloodBrainBarrier();
         System.out.println("thread_combat_ok");
@@ -372,6 +379,47 @@ public class ThreadCombatTest {
         player.orbs.clear();
         player.maxOrbs = 3;
         AbstractDungeon.actionManager = new GameActionManager();
+    }
+
+    private static void testReentrantLifecycle(AbstractPlayer player) {
+        player.maxOrbs = 3;
+        player.orbs.clear();
+        for (int i = 0; i < player.maxOrbs; i++) {
+            player.orbs.add(new EmptyOrbSlot());
+        }
+        ThreadNetwork network = ThreadNetwork.forPlayer(player);
+        ThreadOrb[] slots = new ThreadOrb[2];
+        int[] callbacks = {0};
+        network.installReadOnly(new ProbeFunction() {
+            @Override public void onDestruct(AbstractPlayer owner) {
+                callbacks[0]++;
+                if (callbacks[0] > 1 || !slots[0].isEmpty() || owner.orbs.contains(slots[0])) {
+                    throw new AssertionError("destruction callback must see the old function and slot detached");
+                }
+                slots[0].destroy(owner);
+                network.destructThread(slots[0]);
+                network.destructThread(slots[1]);
+            }
+        });
+        slots[0] = (ThreadOrb) player.orbs.get(0);
+        ProbeFunction sibling = new ProbeFunction();
+        network.installReadOnly(sibling);
+        slots[1] = (ThreadOrb) player.orbs.get(1);
+        network.createEmptyMutableSlot();
+        ThreadOrb survivor = (ThreadOrb) player.orbs.get(2);
+        network.destructThread(slots[0]);
+        equal(1, callbacks[0], "reentrant destruction invokes the old function once");
+        equal(1, sibling.destructEffects, "nested removal destructs the sibling once");
+        assertQueue(player, survivor);
+
+        survivor.mount(new ProbeFunction() {
+            @Override public void atEndOfTurn(AbstractPlayer owner) {
+                network.destructThread(survivor);
+            }
+        }, player);
+        survivor.onEndOfTurn();
+        assertQueue(player);
+        player.orbs.clear();
     }
 
     private static void drainOrbActions() {

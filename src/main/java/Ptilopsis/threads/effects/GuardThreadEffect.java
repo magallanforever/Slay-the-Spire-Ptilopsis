@@ -27,7 +27,7 @@ public class GuardThreadEffect implements ThreadFunction {
 
     @Override
     public void onConstruct(AbstractPlayer player) {
-        this.playback.play(player, makePreviewCards());
+        this.playback.play(player, makeConstructPreviewCards());
     }
 
     @Override
@@ -42,9 +42,17 @@ public class GuardThreadEffect implements ThreadFunction {
 
     @Override
     public void triggerDestructEffect(AbstractPlayer player) {
-        if (this.drawOnDestruct > 0) {
-            this.playback.playDestruction(player, Collections.singletonList(
-                    new ThreadEffectCard(ThreadEffectCard.Effect.DRAW, this.drawOnDestruct)));
-        }
+        this.playback.playDestruction(player, makeDestructPreviewCards());
+    }
+
+    @Override
+    public List<AbstractCard> makeConstructPreviewCards() {
+        return makePreviewCards();
+    }
+
+    @Override
+    public List<AbstractCard> makeDestructPreviewCards() {
+        return this.drawOnDestruct > 0 ? Collections.singletonList(
+                new ThreadEffectCard(ThreadEffectCard.Effect.DRAW, this.drawOnDestruct)) : Collections.emptyList();
     }
 }

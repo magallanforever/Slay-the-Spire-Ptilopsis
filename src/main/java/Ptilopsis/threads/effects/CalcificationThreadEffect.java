@@ -48,7 +48,11 @@ public class CalcificationThreadEffect implements ThreadFunction {
 
     @Override
     public void triggerDestructEffect(AbstractPlayer player) {
-        this.playback.playDestruction(player, Collections.singletonList(
-                new ThreadEffectCard(ThreadEffectCard.Effect.DOUBLE_BLOCK, 0)));
+        this.playback.playDestruction(player, makeDestructPreviewCards());
+    }
+
+    @Override
+    public List<AbstractCard> makeDestructPreviewCards() {
+        return Collections.singletonList(new ThreadEffectCard(ThreadEffectCard.Effect.DOUBLE_BLOCK, 0));
     }
 }

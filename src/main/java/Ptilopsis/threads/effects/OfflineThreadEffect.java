@@ -18,17 +18,10 @@ public class OfflineThreadEffect implements ThreadFunction {
 
     public OfflineThreadEffect(String displayName, List<AbstractCard> selectedCards, int blockOnDestruct) {
         this.blockOnDestruct = blockOnDestruct;
-        StringBuilder builder = new StringBuilder(displayName).append(" [");
+        this.displayName = displayName;
         for (AbstractCard card : selectedCards) {
-            if (!this.storedCards.isEmpty()) {
-                builder.append(" → ");
-            }
-            builder.append(card.name);
-
-            AbstractCard stored = card.makeStatEquivalentCopy();
-            this.storedCards.add(stored);
+            this.storedCards.add(ThreadCardPlayback.copyTemplate(card));
         }
-        this.displayName = builder.append("]").toString();
     }
 
     @Override
@@ -44,10 +37,15 @@ public class OfflineThreadEffect implements ThreadFunction {
     }
 
     @Override
+    public boolean showsCardPreview() {
+        return true;
+    }
+
+    @Override
     public List<AbstractCard> makePreviewCards() {
         List<AbstractCard> cards = new ArrayList<>();
         for (AbstractCard card : this.storedCards) {
-            cards.add(card.makeStatEquivalentCopy());
+            cards.add(ThreadCardPlayback.copyTemplate(card));
         }
         return cards;
     }
@@ -67,8 +65,12 @@ public class OfflineThreadEffect implements ThreadFunction {
         if (this.destroyed) {
             return;
         }
-        this.playback.playDestruction(player, Collections.singletonList(
-                new ThreadEffectCard(ThreadEffectCard.Effect.GUARD, this.blockOnDestruct)));
+        this.playback.playDestruction(player, makeDestructPreviewCards());
+    }
+
+    @Override
+    public List<AbstractCard> makeDestructPreviewCards() {
+        return Collections.singletonList(new ThreadEffectCard(ThreadEffectCard.Effect.GUARD, this.blockOnDestruct));
     }
 
     @Override
